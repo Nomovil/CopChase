@@ -112,6 +112,11 @@ AddEventHandler("PING:startChase_cl",function(source)
 end)
 
 
+RegisterNetEvent("PING:slowDown",function()
+    Slowdown()
+end)
+
+
 -- variables
 remainingseconds  = -1
 keepTimeThreadRunning = true

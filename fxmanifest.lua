@@ -12,7 +12,8 @@ client_scripts {
     "client_helper_fkt.lua",
     "config.lua",
     "gui_client.lua",
-    "client_itembox.lua"
+    "client_itembox.lua",
+    "client_itmebox_actions.lua"
 }
 
 server_scripts {

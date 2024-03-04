@@ -71,3 +71,14 @@ function createSoppwatchThread()
         TriggerServerEvent("PING:deliverMessage",message)
     end)
 end
+
+
+
+RegisterCommand("itembox",function()
+    local pos = getPosinHeading(PlayerPedId())
+    createNewItemBox(pos)
+end,false)
+
+RegisterCommand("clearitems",function()
+    itemboxes = {}
+end)

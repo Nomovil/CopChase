@@ -20,14 +20,7 @@ function selectAction()
     end
 end
 
-RegisterCommand("itembox",function()
-    local pos = getPosinHeading(PlayerPedId())
-    createNewItemBox(pos)
-end,false)
 
-RegisterCommand("clearitems",function()
-    itemboxes = {}
-end)
 
 
 -- Main Thread

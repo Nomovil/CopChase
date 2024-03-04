@@ -6,9 +6,9 @@ function Slowdown()
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
         disablePlayerEjection = true
-        local countdowntime = GetGameTimer() + 10*1000
+        local countdowntime = GetGameTimer() + RESETTIME_SLOWDOWN*1000
         while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
-            SetEntityMaxSpeed(vehicle, 10.0)
+            SetEntityMaxSpeed(vehicle, MAX_SPEED_SLOWED)
             Citizen.Wait(0)
         end
         disablePlayerEjection = false
@@ -23,11 +23,11 @@ function Speedup()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
-        local countdowntime = GetGameTimer() + 0.1*1000
+        local countdowntime = GetGameTimer() + RESETTIME_SPEEDUP*1000
         while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
             Citizen.Wait(100)
         end
-        SetVehicleForwardSpeed(vehicle , 80.0 )
+        SetVehicleForwardSpeed(vehicle , BOOST_FORCE )
         
     end)
 end
@@ -37,7 +37,7 @@ function InvertVehicleControls()
     helpMessage("Your controls are inverted.")
     Citizen.CreateThread(function()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-        local countdowntime = GetGameTimer() + 10*1000
+        local countdowntime = GetGameTimer() + RESTETTIME_INVERT_CRTL*1000
         SetVehicleControlsInverted(vehicle, true)
             while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
                 Citizen.Wait(100)
@@ -55,7 +55,7 @@ function PlayerWantedLevel()
     Citizen.CreateThread(function()
         SetPlayerWantedLevel(PlayerId(),selected_WantedLevel, false)
         SetPlayerWantedLevelNow(PlayerId(), false)
-        local countdowntime = GetGameTimer() + 10*1000
+        local countdowntime = GetGameTimer() + RESTTIME_WANTED_LEVEL*1000
             while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
                 Citizen.Wait(100)
             end

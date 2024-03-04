@@ -57,6 +57,14 @@ Citizen.CreateThread(function()
     end
 end)
 
+Citizen.CreateThread(function()
+    while true do
+        local pos = getPosinHeading(PlayerPedId())
+        -- selectAction()
+        TriggerServerEvent("PING:createItemBox",pos)
+        Citizen.Wait(RANDOM_ITEMBOX_SPAWN_TIMER*1000)
+    end
+end)
 
 -- Main Thread checks if Users is in reach of marker
 Citizen.CreateThread(function()
@@ -79,7 +87,7 @@ end)
 
 function createNewItemBox(pos)
     local boxtype = choose_element({NORMAL_BOX_MARKER
-,REPAIR_BOX_MARKER},{0.8,0.2})
+,REPAIR_BOX_MARKER},probabilities_itemboxtype)
     local box = {
         x = pos.x,
         y = pos.y,
@@ -90,7 +98,7 @@ function createNewItemBox(pos)
 end
 
 function action_button_pressed()
-    if IsControlJustReleased(0, 19) then
+    if IsControlJustReleased(0, ACTION_BTN_NUMBER) then
         local pos = getPosinHeading(PlayerPedId())
         -- selectAction()
         TriggerServerEvent("PING:createItemBox",pos)
@@ -121,7 +129,7 @@ function MarkerisinReach(box,index)
         else
             selectAction()
         end
-    elseif distance >= 1000 then
+    elseif distance >= ITEMBOX_MAX_DISTANCE then
         table.remove(itemboxes,index)
     end
 end

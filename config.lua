@@ -5,3 +5,4 @@ scaleFactor = 0.4
 fontNumber = 4
 
 COUNTDOWNTIME = 15 
+Hallo  = true

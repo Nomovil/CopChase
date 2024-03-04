@@ -81,12 +81,13 @@ end
 
 function Slowdown()
     Citizen.CreateThread(function()
-        helpMessage("Youe are beeing Slowed")
+        helpMessage("You are being Slowed")
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
         disablePlayerEjection = true
-        while actionActive do
+        local countdowntime = setCountdownTime(10)
+        while getRemainingCountdownTime(countdowntime)<= 0 do
             SetEntityMaxSpeed(vehicle, 10.0)
             Citizen.Wait(0)
         end

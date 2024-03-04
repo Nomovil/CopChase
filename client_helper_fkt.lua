@@ -59,7 +59,13 @@ function getremainingTime()
     return math.floor((time-GetGameTimer())/1000)
 end
 
+function setCountdownTime(time_to_count_down)
+    return GetGameTimer() + time_to_count_down*1000)
+end
 
+function getRemainingCountdownTime(finishtime)
+   return math.floor((finishtime - GetGameTimer())/1000) 
+end
 -- Utility function to display HUD text
 function DrawHudText(text,colour,coordsx,coordsy,scalex,scaley)
     SetTextFont(4)

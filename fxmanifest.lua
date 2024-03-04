@@ -21,3 +21,12 @@ server_scripts {
     "server_events.lua",
     "server_threads.lua"
 }
+
+ui_page 'nui/nui.html'
+
+files {
+    'nui/nui.html',
+    'nui/style.css',
+    'nui/script.js',
+    'nui/images/*'
+}

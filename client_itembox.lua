@@ -185,3 +185,32 @@ Citizen.CreateThread(function()
     show_number_of_speedboosts()
 end)
 Citizen.CreateThread(activate_speedboost())
+
+
+
+
+
+-- Function  Thread to display all active Itembox effects for player
+Citizen.CreateThread(function()
+    while true do
+        SendNUIMessage({
+            slowed = slowdown_visible,
+            slowed_alpha = slowdown_alpha,
+            speedboost = speedboost_added_visible,
+            speedboost_alpha = 1,
+            invCtrl = inv_ctrl_visible,
+            invCtrl_alpha = inv_ctrl_alpha,
+            wanted = wanted_visible,
+            wanted_alpha = wanted_alpha,
+            ramp = ramp_visible,
+            ramp_alpha = ramp_alpha,
+            fixcar = fixcar_visible,
+            fixcar_alpha = 1,
+            slowcops = slowCops_visible,
+            slowcops_alpha = slowCops_alpha,
+            slowthief = slowThiefs_visible,
+            slowthief_alpha = slowThiefs_alpha,
+        })
+        Citizen.Wait(GUI_UPDATE_TIME)
+    end
+end)

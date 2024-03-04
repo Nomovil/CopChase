@@ -22,6 +22,7 @@ probabilities_WantedLevels = {0.2,0.2,0.3,0.2,0.1}
 -- Config  for SpawnRamp
 RampType = {"prop_mp_ramp_01", "prop_mp_ramp_02", "prop_mp_ramp_03"}
 probabilities_Ramp = {0.3, 0.5, 0.2}
+RESTTIME_RAMP = 5
 -- Config  for SelectAction (Itembox)
 probabilities_Actions = {
     0.1, -- Slowdown
@@ -46,11 +47,15 @@ NORMAL_BOX_MARKER = 32
 REPAIR_BOX_MARKER = 36
 MARKERRANGE = 5
 ITEMBOX_MAX_DISTANCE = 100
+GUI_UPDATE_TIME = 100 -- ms
+
 -- Time for Random Generation of an Itembox
 RANDOM_ITEMBOX_SPAWN_TIMER = 120 -- seconds
 
 ACTION_BTN_NUMBER = 19
 DEV_BTN_NUMBER = 132
+
+
 
 COUNTDOWNTIME = 15 
 TESTING = true

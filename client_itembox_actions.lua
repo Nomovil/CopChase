@@ -30,6 +30,7 @@ function Speedup()
 end
 
 function InvertVehicleControls()
+    helpMessage("Your controls are inverted.")
     Citizen.CreateThread(function()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local countdowntime = GetGameTimer() + 10*1000
@@ -42,6 +43,7 @@ function InvertVehicleControls()
 end
 
 function PlayerWantedLevel()
+    helpMessage("You are wanted.")
     local WantedLevels = {1,2,3,4,5}
     local probabilities = {0.2,0.2,0.3,0.2,0.1}
     local selected_WantedLevel = choose_element(WantedLevels, probabilities)
@@ -58,6 +60,7 @@ function PlayerWantedLevel()
 end
 
 function SpawnRamp()
+    helpMessage("RAAAAAAAAAAAAAAAAAAAAMP it!!!")
     math.randomseed(GetGameTimer())  
     local RampType = {"prop_mp_ramp_01", "prop_mp_ramp_02", "prop_mp_ramp_03"}
     local probabilities = {0.3, 0.5, 0.2} 

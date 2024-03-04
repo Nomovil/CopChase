@@ -16,8 +16,11 @@ function selectAction()
         function()
             TriggerServerEvent("PING:slowdownThief")
         end,
+        InvertVehicleControls,
+        PlayerWantedLevel,
+        SpawnRamp,
     }
-    local probabilities = {0.5, 0.5,}
+    local probabilities = {0.2,0.2,0.2,0.2,0.2}
 
     local function_to_call = choose_element(elements, probabilities)
     function_to_call()
@@ -29,7 +32,7 @@ end
 function choose_element(elements, probabilities)
     -- Überprüfen, ob die Länge der Liste und die der Wahrscheinlichkeiten übereinstimmen
     if #elements ~= #probabilities then
-        error("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen.")
+        error("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen. Elements:" + #elements + "props: " + #probabilities)
     end
     
     -- Kumulative Summe der Wahrscheinlichkeiten berechnen

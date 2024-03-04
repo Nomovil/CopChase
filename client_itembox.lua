@@ -7,22 +7,9 @@ ACTIONTIMES = 2
 
 
 function selectAction()
-    -- Speedup()
 
-    local elements = {
-        function()
-            TriggerServerEvent("PING:slowdownCops")
-        end,
-        function()
-            TriggerServerEvent("PING:slowdownThief")
-        end,
-        InvertVehicleControls,
-        PlayerWantedLevel,
-        SpawnRamp,
-    }
-    local probabilities = {0.2,0.2,0.2,0.2,0.2}
-
-    local function_to_call = choose_element(elements, probabilities)
+    local Actions = {Slowdown, Speedup, InvertVehicleControls, PlayerWantedLevel, SpawnRamp}
+    local function_to_call = choose_element(Actions, probabilities_Actions)
     function_to_call()
 
 
@@ -32,7 +19,7 @@ end
 function choose_element(elements, probabilities)
     -- Überprüfen, ob die Länge der Liste und die der Wahrscheinlichkeiten übereinstimmen
     if #elements ~= #probabilities then
-        error("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen. Elements:" + #elements + "props: " + #probabilities)
+        error(string.format("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen. Elements: %d, Probabilities: %d", #elements, #probabilities))
     end
     
     -- Kumulative Summe der Wahrscheinlichkeiten berechnen
@@ -93,7 +80,8 @@ function action_button_pressed()
     if IsControlJustReleased(0, 19) then
         local pos = getPosinHeading(PlayerPedId())
         -- selectAction()
-        TriggerServerEvent("PING:createItemBox",pos)
+        Speedup()
+        -- TriggerServerEvent("PING:createItemBox",pos)
 
     end
 end

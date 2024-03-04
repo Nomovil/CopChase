@@ -17,14 +17,15 @@ end
 
 function Speedup()
     Citizen.CreateThread(function()
+        helpMessage("Whoooooooosh!!!")
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
-        local countdowntime = GetGameTimer() + 2*1000
+        local countdowntime = GetGameTimer() + 0.1*1000
         while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
-            SetVehicleForwardSpeed(vehicle , 50.0 )
             Citizen.Wait(100)
         end
+        SetVehicleForwardSpeed(vehicle , 80.0 )
         
     end)
 end
@@ -44,9 +45,8 @@ end
 
 function PlayerWantedLevel()
     helpMessage("You are wanted.")
-    local WantedLevels = {1,2,3,4,5}
-    local probabilities = {0.2,0.2,0.3,0.2,0.1}
-    local selected_WantedLevel = choose_element(WantedLevels, probabilities)
+
+    local selected_WantedLevel = choose_element(WantedLevels, probabilities_WantedLevels)
 
     Citizen.CreateThread(function()
         SetPlayerWantedLevel(PlayerId(),selected_WantedLevel, false)
@@ -62,9 +62,7 @@ end
 function SpawnRamp()
     helpMessage("RAAAAAAAAAAAAAAAAAAAAMP it!!!")
     math.randomseed(GetGameTimer())  
-    local RampType = {"prop_mp_ramp_01", "prop_mp_ramp_02", "prop_mp_ramp_03"}
-    local probabilities = {0.3, 0.5, 0.2} 
-    local selected_Ramp = choose_element(RampType, probabilities)
+    local selected_Ramp = choose_element(RampType, probabilities_Ramp)
     
     Citizen.CreateThread(function()
     local coordinates = getPosinHeading(PlayerPedId())

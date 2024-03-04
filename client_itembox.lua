@@ -9,16 +9,16 @@ ACTIONTIMES = 2
 function selectAction()
     local index = math.random(0,100)
     print("Action Choice", index);
-    Speedup()
-    -- if index < 50 then
-    --     print("Slowing down Thiefs")
-    --     -- Slowdown()
-    --     TriggerServerEvent("PING:slowdownThief")
-    -- elseif index > 50 then
-    --     -- Speedup()
-    --     print("Slowing down Cops")
-    --     TriggerServerEvent("PING:slowdownCops")
-    -- end
+    -- SpawnRamp()
+    if index < 50 then
+        print("Slowing down Thiefs")
+        -- Slowdown()
+        TriggerServerEvent("PING:slowdownThief")
+    elseif index > 50 then
+        -- Speedup()
+        print("Slowing down Cops")
+        TriggerServerEvent("PING:slowdownCops")
+    end
 end
 
 
@@ -58,7 +58,8 @@ end
 function e_pressed()
     if IsControlJustReleased(0, 19) then
         local pos = getPosinHeading(PlayerPedId())
-        TriggerServerEvent("PING:createItemBox",pos)
+        PlayerWantedLevel()
+        -- TriggerServerEvent("PING:createItemBox",pos)
         -- createNewItemBox(pos)
     end
 end
@@ -88,7 +89,7 @@ function Slowdown()
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
         disablePlayerEjection = true
         local countdowntime = GetGameTimer() + 10*1000
-        while math.floor((countdowntime - GetGameTimer())/1000) <= 0 do
+        while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
             SetEntityMaxSpeed(vehicle, 10.0)
             Citizen.Wait(0)
         end
@@ -102,18 +103,90 @@ function Speedup()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
-        Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, true, 10.0, 10.0, 10.0, false)
-        -- SetVehicleNitroEnabled(vehicle,true)
-        -- SetVehicleMod(vehicle,17,17,false)
+        local countdowntime = GetGameTimer() + 2*1000
+        while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
+            SetVehicleForwardSpeed(vehicle , 50.0 )
+            Citizen.Wait(100)
+        end
+        
+    end)
+end
+
+function InvertVehicleControls()
+    Citizen.CreateThread(function()
+        local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local countdowntime = GetGameTimer() + 10*1000
+        SetVehicleControlsInverted(vehicle, true)
+            while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
+                Citizen.Wait(100)
+            end
+        SetVehicleControlsInverted(vehicle, false)
+    end)
+end
+
+function PlayerWantedLevel()
+    local WantedLevels = {1,2,3,4,5}
+    local probabilities = {0.2,0.2,0.3,0.2,0.1}
+    local selected_WantedLevel = choose_element(WantedLevels, probabilities)
+
+    Citizen.CreateThread(function()
+        SetPlayerWantedLevel(PlayerId(),selected_WantedLevel, false)
+        SetPlayerWantedLevelNow(PlayerId(), false)
+        local countdowntime = GetGameTimer() + 10*1000
+            while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
+                Citizen.Wait(100)
+            end
+        ClearPlayerWantedLevel(PlayerId())
+    end)
+end
+
+function SpawnRamp()
+    math.randomseed(GetGameTimer())  
+    local RampType = {"prop_mp_ramp_01", "prop_mp_ramp_02", "prop_mp_ramp_03"}
+    local probabilities = {0.3, 0.5, 0.2} 
+    local selected_Ramp = choose_element(RampType, probabilities)
+    
+    Citizen.CreateThread(function()
+    local coordinates = getPosinHeading(PlayerPedId())
+    local ramp = CreateObject(selected_Ramp,coordinates.x,coordinates.y,coordinates.z-1, true, true, true)
+    local heading = GetEntityHeading(PlayerPedId())
+   
+    SetEntityHeading(ramp, heading)
+    local countdowntime = GetGameTimer() + 5*1000
         while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
             Citizen.Wait(100)
         end
-        -- SetVehicleNitroEnabled(vehicle,false)
-        Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, false, 0, 0, 0, false)
+    DeleteObject(ramp)
     end)
+
 end
--- ModifyVehicleTopSpeed(vehicle,5)
+
+-- function SelectRampType()
+--     RampTypes = {"prop_mp_ramp_01","prop_mp_ramp_02","prop_mp_ramp_03"}
+function choose_element(elements, probabilities)
+    -- Überprüfen, ob die Länge der Liste und die der Wahrscheinlichkeiten übereinstimmen
+    if #elements ~= #probabilities then
+        error("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen.")
+    end
+    
+    -- Kumulative Summe der Wahrscheinlichkeiten berechnen
+    local cumulative_probabilities = {}
+    local cumulative_sum = 0
+    for i, prob in ipairs(probabilities) do
+        cumulative_sum = cumulative_sum + prob
+        cumulative_probabilities[i] = cumulative_sum
+    end
+    
+    -- Zufallszahl zwischen 0 und 1 generieren
+    local random_value = math.random()
+    
+    -- Element auswählen basierend auf der Zufallszahl und den kumulativen Wahrscheinlichkeiten
+    for i, cumulative_prob in ipairs(cumulative_probabilities) do
+        if random_value <= cumulative_prob then
+            return elements[i]
+        end
+    end
+end
 
 function ActionTimer()
     Citizen.CreateThread(function()

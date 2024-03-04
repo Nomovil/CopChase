@@ -26,10 +26,13 @@ jobs:
       - uses: actions/checkout@v3
       # Runs a single command using the runners shell
       - name: Sync files to hosting
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: Dylan700/sftp-upload-action@latest
         with:
           server: 31.214.141.185
           username: root
           password: ${{ secrets.FTP_SERVER_PASSWORD }}
-          protocol: ftps
-          server-dir: /home/zap1137563/g596627/gta5-fivem-txadmin/CFXDefaultFiveM_7CB218.base/resources/CopChase/          
+          port: 22
+          uploads: ./ => /home/zap1137563/g596627/gta5-fivem-txadmin/CFXDefaultFiveM_7CB218.base/resources/CopChase/          
+          ignore: |
+            *.git
+            */**/*git*

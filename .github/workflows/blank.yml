@@ -31,4 +31,6 @@ jobs:
           server: 31.214.141.185
           username: root
           password: ${{ secrets.FTP_SERVER_PASSWORD }}
+          protocol: ftps
+          port: 22
           server-dir: /home/zap1137563/g596627/gta5-fivem-txadmin/CFXDefaultFiveM_7CB218.base/resources/CopChase/          

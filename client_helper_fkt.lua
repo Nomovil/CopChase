@@ -60,7 +60,7 @@ function getremainingTime()
 end
 
 function setCountdownTime(time_to_count_down)
-    return GetGameTimer() + time_to_count_down*1000)
+    return GetGameTimer() + time_to_count_down*1000
 end
 
 function getRemainingCountdownTime(finishtime)

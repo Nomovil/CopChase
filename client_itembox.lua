@@ -9,15 +9,16 @@ ACTIONTIMES = 2
 function selectAction()
     local index = math.random(0,100)
     print("Action Choice", index);
-    if index < 50 then
-        print("Slowing down Thiefs")
-        -- Slowdown()
-        TriggerServerEvent("PING:slowdownThief")
-    elseif index > 50 then
-        -- Speedup()
-        print("Slowing down Cops")
-        TriggerServerEvent("PING:slowdownCops")
-    end
+    Speedup()
+    -- if index < 50 then
+    --     print("Slowing down Thiefs")
+    --     -- Slowdown()
+    --     TriggerServerEvent("PING:slowdownThief")
+    -- elseif index > 50 then
+    --     -- Speedup()
+    --     print("Slowing down Cops")
+    --     TriggerServerEvent("PING:slowdownCops")
+    -- end
 end
 
 
@@ -55,7 +56,7 @@ function createNewItemBox(pos)
 end
 
 function e_pressed()
-    if IsControlJustReleased(0, 86) then
+    if IsControlJustReleased(0, 19) then
         local pos = getPosinHeading(PlayerPedId())
         TriggerServerEvent("PING:createItemBox",pos)
         -- createNewItemBox(pos)
@@ -86,8 +87,8 @@ function Slowdown()
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
         disablePlayerEjection = true
-        local countdowntime = setCountdownTime(10)
-        while getRemainingCountdownTime(countdowntime)<= 0 do
+        local countdowntime = GetGameTimer() + 10*1000
+        while math.floor((countdowntime - GetGameTimer())/1000) <= 0 do
             SetEntityMaxSpeed(vehicle, 10.0)
             Citizen.Wait(0)
         end
@@ -101,15 +102,18 @@ function Speedup()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
-        SetVehicleNitroEnabled(vehicle,true)
-        while actionActive do
-            
-            Citizen.Wait(0)
+        Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, true, 10.0, 10.0, 10.0, false)
+        -- SetVehicleNitroEnabled(vehicle,true)
+        -- SetVehicleMod(vehicle,17,17,false)
+        local countdowntime = GetGameTimer() + 10*1000
+        while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
+            Citizen.Wait(100)
         end
-        SetVehicleNitroEnabled(vehicle,false)
+        -- SetVehicleNitroEnabled(vehicle,false)
+        Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, false, 0, 0, 0, false)
     end)
 end
-ModifyVehicleTopSpeed(vehicle,5)
+-- ModifyVehicleTopSpeed(vehicle,5)
 
 function ActionTimer()
     Citizen.CreateThread(function()

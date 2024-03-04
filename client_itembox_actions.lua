@@ -1,4 +1,5 @@
 function Slowdown()
+    print("Slowdown")
     Citizen.CreateThread(function()
         helpMessage("You are being Slowed")
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
@@ -16,6 +17,7 @@ function Slowdown()
 end
 
 function Speedup()
+    print("Speedup")
     Citizen.CreateThread(function()
         helpMessage("Whoooooooosh!!!")
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
@@ -31,6 +33,7 @@ function Speedup()
 end
 
 function InvertVehicleControls()
+    print("InvertCtrl")
     helpMessage("Your controls are inverted.")
     Citizen.CreateThread(function()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
@@ -44,6 +47,7 @@ function InvertVehicleControls()
 end
 
 function PlayerWantedLevel()
+    print("Wanted")
     helpMessage("You are wanted.")
 
     local selected_WantedLevel = choose_element(WantedLevels, probabilities_WantedLevels)
@@ -60,6 +64,7 @@ function PlayerWantedLevel()
 end
 
 function SpawnRamp()
+    print("Ramp")
     helpMessage("RAAAAAAAAAAAAAAAAAAAAMP it!!!")
     math.randomseed(GetGameTimer())  
     local selected_Ramp = choose_element(RampType, probabilities_Ramp)
@@ -77,4 +82,30 @@ function SpawnRamp()
     DeleteObject(ramp)
     end)
 
+end
+
+function fixcar()
+    print("Fix Car")
+    helpMessage("Your Vehicle got repaired")
+    local localPlayerPed = GetPlayerPed(-1)
+    local localVehicle = GetVehiclePedIsIn(localPlayerPed, false)
+    SetVehicleFixed(localVehicle)
+end
+
+
+function add_speedboster()
+    print("Speedbooster")
+    helpMessage("You got a speed booster")
+    number_of_speedboosts =  number_of_speedboosts + 1
+end
+
+
+function slowCops()
+    print("SlowingCops")
+    TriggerServerEvent("PING:slowdownCops")
+end
+
+function slowThiefs()
+    print("Slowing Thiefs")
+    TriggerServerEvent("PING:slowdownThief")
 end

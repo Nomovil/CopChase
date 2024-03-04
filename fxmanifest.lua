@@ -13,7 +13,8 @@ client_scripts {
     "config.lua",
     "gui_client.lua",
     "client_itembox.lua",
-    "client_itembox_actions.lua"
+    "client_itembox_actions.lua",
+    "develpoment_client.lua"
 }
 
 server_scripts {

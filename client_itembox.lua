@@ -1,14 +1,17 @@
 itemboxes = {}
-MARKERRANGE = 5
-MARKERSYMBOL = 32
-actionActive = true
-ACTIONTIMES = 2
-
-
 
 function selectAction()
 
-    local Actions = {Slowdown, Speedup, InvertVehicleControls, PlayerWantedLevel, SpawnRamp}
+    local Actions = {
+        Slowdown,
+        add_speedboster,
+        InvertVehicleControls,
+        PlayerWantedLevel,
+        SpawnRamp,
+        fixcar,
+        slowCops,
+        slowThiefs
+    }
     local function_to_call = choose_element(Actions, probabilities_Actions)
     function_to_call()
 
@@ -62,8 +65,8 @@ Citizen.CreateThread(function()
         if not IsPedInAnyVehicle(PlayerPedId(), false) then
             goto continue
         end
-        for index, pos in ipairs(itemboxes) do
-            MarkerisinReach(pos,index)
+        for index, box in ipairs(itemboxes) do
+            MarkerisinReach(box,index)
         end
         ::continue::
     end
@@ -72,31 +75,52 @@ end)
 
 -- Itmebox Handling
 
+
+
 function createNewItemBox(pos)
-    table.insert(itemboxes,pos)
+    local boxtype = choose_element({NORMAL_BOX_MARKER
+,REPAIR_BOX_MARKER},{0.8,0.2})
+    local box = {
+        x = pos.x,
+        y = pos.y,
+        z = pos.z,
+        type = boxtype
+    }
+    table.insert(itemboxes,box)
 end
 
 function action_button_pressed()
     if IsControlJustReleased(0, 19) then
         local pos = getPosinHeading(PlayerPedId())
         -- selectAction()
-        Speedup()
-        -- TriggerServerEvent("PING:createItemBox",pos)
+        TriggerServerEvent("PING:createItemBox",pos)
 
     end
 end
 
 function drawExistingItemBox()
-    for index, pos in ipairs(itemboxes) do
-        DrawMarker(MARKERSYMBOL,pos.x,pos.y,pos.z,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 0, 255, 0, 255, true, true, 2, nil, nil, false)
+    for index, box in ipairs(itemboxes) do
+        local red = 0
+        local green = 255
+        local blue = 0
+        if box.type == REPAIR_BOX_MARKER then
+            red = 50
+            green = 255
+            blue = 255
+        end
+        DrawMarker(box.type,box.x,box.y,box.z,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255, true, true, 2, nil, nil, false)
     end
 end
 
-function MarkerisinReach(pos,index)
-    local distance = GetDistanceBetweenCoords(pos,GetEntityCoords(PlayerPedId()))
+function MarkerisinReach(box,index)
+    local distance = GetDistanceBetweenCoords(box.x,box.y,box.z,GetEntityCoords(PlayerPedId()))
     if distance < MARKERRANGE then
         TriggerServerEvent("PING:removeItemBox",index)
-        selectAction()
+        if box.type == REPAIR_BOX_MARKER then
+            fixcar()
+        else
+            selectAction()
+        end
     elseif distance >= 1000 then
         table.remove(itemboxes,index)
     end
@@ -122,3 +146,34 @@ RegisterNetEvent("PING:removeItemBox", function(index)
     Citizen.Wait(100)
 end)
 
+
+
+
+function show_number_of_speedboosts()
+    while true do
+        if number_of_speedboosts >= 1 then
+            local text = string.format("Speedboosts: %d", number_of_speedboosts)
+            drawTxt(text,4,{0,255,0},0.4,screenPosX+0.02,screenPosY)
+        end
+        Citizen.Wait(0)
+    end
+end
+
+
+
+function activate_speedboost()
+    while true do
+        DisableControlAction(0,80,true)
+        if IsControlJustReleased(2, 45) and number_of_speedboosts >= 1 then
+            Speedup()
+            number_of_speedboosts = number_of_speedboosts - 1
+        end
+        Citizen.Wait(0)
+    end
+end
+
+
+Citizen.CreateThread(function()
+    show_number_of_speedboosts()
+end)
+Citizen.CreateThread(activate_speedboost())

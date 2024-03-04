@@ -7,24 +7,50 @@ ACTIONTIMES = 2
 
 
 function selectAction()
-    local index = math.random(0,100)
-    print("Action Choice", index);
-    Speedup()
-    -- if index < 50 then
-    --     print("Slowing down Thiefs")
-    --     -- Slowdown()
-    --     TriggerServerEvent("PING:slowdownThief")
-    -- elseif index > 50 then
-    --     -- Speedup()
-    --     print("Slowing down Cops")
-    --     TriggerServerEvent("PING:slowdownCops")
-    -- end
+    -- Speedup()
+
+    local elements = {
+        function()
+            TriggerServerEvent("PING:slowdownCops")
+        end,
+        function()
+            TriggerServerEvent("PING:slowdownThief")
+        end,
+    }
+    local probabilities = {0.5, 0.5,}
+
+    local function_to_call = choose_element(elements, probabilities)
+    function_to_call()
+
 end
 
 
+function choose_element(elements, probabilities)
+    -- Überprüfen, ob die Länge der Liste und die der Wahrscheinlichkeiten übereinstimmen
+    if #elements ~= #probabilities then
+        error("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen.")
+    end
+    
+    -- Kumulative Summe der Wahrscheinlichkeiten berechnen
+    local cumulative_probabilities = {}
+    local cumulative_sum = 0
+    for i, prob in ipairs(probabilities) do
+        cumulative_sum = cumulative_sum + prob
+        cumulative_probabilities[i] = cumulative_sum
+    end
+    -- Zufallszahl zwischen 0 und 1 generieren
+    local random_value = math.random()
+    -- Element auswählen basierend auf der Zufallszahl und den kumulativen Wahrscheinlichkeiten
+    for i, cumulative_prob in ipairs(cumulative_probabilities) do
+        if random_value <= cumulative_prob then
+            return elements[i]
+        end
+    end
+end
 
 
 -- Main Thread
+-- Checks Button Presses and Draws Itemboxes
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -32,11 +58,13 @@ Citizen.CreateThread(function()
             goto continue
         end
         drawExistingItemBox()
-        e_pressed()
+        action_button_pressed()
         ::continue::
     end
 end)
 
+
+-- Main Thread checks if Users is in reach of marker
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(100)
@@ -51,15 +79,17 @@ Citizen.CreateThread(function()
 end)
 
 
+-- Itmebox Handling
+
 function createNewItemBox(pos)
     table.insert(itemboxes,pos)
 end
 
-function e_pressed()
+function action_button_pressed()
     if IsControlJustReleased(0, 19) then
         local pos = getPosinHeading(PlayerPedId())
+        -- selectAction()
         TriggerServerEvent("PING:createItemBox",pos)
-        -- createNewItemBox(pos)
     end
 end
 
@@ -80,6 +110,32 @@ function MarkerisinReach(pos,index)
 end
 
 
+function getPosinHeading(playerid)
+    fwd,_,_,pos = GetEntityMatrix(playerid)
+    local multiplyer = math.random(10,100)
+    local newx = pos.x + fwd.x*multiplyer
+    local newy = pos.y + fwd.y*multiplyer
+    local newPosHeading = vec(newx,newy,pos.z)
+    retval, newz = GetSafeCoordForPed(newPosHeading.x,newPosHeading.y,newPosHeading.z,false,newz,0)
+    return newz
+end
+
+
+RegisterNetEvent("PING:createItemBox",function(pos)
+    createNewItemBox(pos)
+end)
+
+RegisterNetEvent("PING:removeItemBox", function(index)
+    table.remove(itemboxes,index)
+    Citizen.Wait(100)
+end)
+
+
+
+-- Action Definitions
+
+
+
 function Slowdown()
     Citizen.CreateThread(function()
         helpMessage("You are being Slowed")
@@ -88,7 +144,7 @@ function Slowdown()
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
         disablePlayerEjection = true
         local countdowntime = GetGameTimer() + 10*1000
-        while math.floor((countdowntime - GetGameTimer())/1000) <= 0 do
+        while math.floor((countdowntime - GetGameTimer())/1000) >= 0 do
             SetEntityMaxSpeed(vehicle, 10.0)
             Citizen.Wait(0)
         end
@@ -102,7 +158,7 @@ function Speedup()
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         local currspeed = GetEntitySpeed(vehicle)
         local maxSpeed = GetVehicleHandlingFloat(vehicle,"CHandlingData","fInitialDriveMaxFlatVel")
-        Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, true, 10.0, 10.0, 10.0, false)
+        Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, true, 2.5, 1.0, 4.0, false)
         -- SetVehicleNitroEnabled(vehicle,true)
         -- SetVehicleMod(vehicle,17,17,false)
         local countdowntime = GetGameTimer() + 10*1000
@@ -113,66 +169,9 @@ function Speedup()
         Citizen.InvokeNative(0xC8E9B6B71B8E660D, vehicle, false, 0, 0, 0, false)
     end)
 end
--- ModifyVehicleTopSpeed(vehicle,5)
 
-function ActionTimer()
-    Citizen.CreateThread(function()
-        actionActive = true
-        Citizen.Wait(ACTIONTIMES*1000)
-        actionActive = false
-    end)
-end
-
-function getPosinHeading(playerid)
-    fwd,_,_,pos = GetEntityMatrix(playerid)
-    local multiplyer = math.random(10,100)
-    local newx = pos.x + fwd.x*multiplyer
-    local newy = pos.y + fwd.y*multiplyer
-    local newPosHeading = vec(newx,newy,pos.z)
-    retval, newz = GetSafeCoordForPed(newPosHeading.x,newPosHeading.y,newPosHeading.z,false,newz,0)
-    return newz
-end
-
-
-function drawTxt(content, font, colour, scale, x, y)
-    SetTextFont(font)
-    SetTextScale(scale, scale)
-    SetTextColour(colour[1],colour[2],colour[3], 255)
-    SetTextEntry("STRING")
-    SetTextDropShadow(0, 0, 0, 0,255)
-    SetTextDropShadow()
-    SetTextEdge(4, 0, 0, 0, 255)
-    SetTextOutline()
-    AddTextComponentString(content)
-    DrawText(x, y)
-end
-
-
-function printToPlayer(msg)
-    TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
-        multiline = true,
-        args = {"[Ping]", msg}
-        }
-    )
-end
 
 RegisterNetEvent("PING:slowDown",function()
-    ActionTimer()
     Slowdown()
 end)
 
-RegisterNetEvent("PING:createItemBox",function(pos)
-    createNewItemBox(pos)
-end)
-
-RegisterNetEvent("PING:removeItemBox", function(index)
-    table.remove(itemboxes,index)
-    Citizen.Wait(100)
-end)
-
-function helpMessage(text, duration)
-    BeginTextCommandDisplayHelp("STRING")
-    AddTextComponentSubstringPlayerName(text)
-    EndTextCommandDisplayHelp(0, false, true, duration or 5000)
-end

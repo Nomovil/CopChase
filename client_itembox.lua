@@ -184,7 +184,7 @@ end
 Citizen.CreateThread(function()
     show_number_of_speedboosts()
 end)
-Citizen.CreateThread(activate_speedboost())
+Citizen.CreateThread(activate_speedboost)
 
 
 

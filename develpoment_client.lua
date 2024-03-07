@@ -15,6 +15,7 @@ if TESTING then
     toggle = false
     function dev_function()
         print("Calling dev function")
+        changeVehicle()
     end
 end
 --- New Content

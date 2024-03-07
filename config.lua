@@ -4,6 +4,10 @@ locationColorText = {255, 255, 255}
 scaleFactor = 0.4
 fontNumber = 4
 
+-- Config for Change Vehicle
+VehicleType = {}
+probabilities_vehicle = {}
+
 -- Config for Slowdown
 RESETTIME_SLOWDOWN = 10
 MAX_SPEED_SLOWED = 10.0

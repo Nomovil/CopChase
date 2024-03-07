@@ -171,3 +171,25 @@ function slowThiefs()
         slowThiefs_alpha = 1.0
     end)
 end
+
+
+function changeVehicle()
+    local player = GetPlayerPed(-1)
+    local currentVehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    local newVehicle = "adder"--choose_element(Vehicles, probabilities_vehicles)
+    
+    RequestModel(newVehicle)
+    
+    while not HasModelLoaded(newVehicle) do
+        Wait(0)
+    end
+
+    if currentVehicle ~= 0 then
+        local currentSpeed = GetEntitySpeed(currentVehicle)
+        DeleteVehicle(currentVehicle)
+    
+        local vehicle = CreateVehicle(newVehicle, GetEntityCoords(player), GetEntityHeading(player), true, false)
+        TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
+        SetVehicleForwardSpeed(vehicle, currentSpeed)
+    end
+end

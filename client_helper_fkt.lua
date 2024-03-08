@@ -60,7 +60,7 @@ function getremainingTime()
 end
 
 function setCountdownTime(time_to_count_down)
-    return GetGameTimer() + time_to_count_down*1000)
+    return GetGameTimer() + time_to_count_down*1000
 end
 
 function getRemainingCountdownTime(finishtime)
@@ -80,4 +80,11 @@ function DrawHudText(text,colour,coordsx,coordsy,scalex,scaley)
     SetTextEntry("STRING")
     AddTextComponentString(text)
     DrawText(coordsx,coordsy)
+end
+
+
+function helpMessage(text, duration)
+    BeginTextCommandDisplayHelp("STRING")
+    AddTextComponentSubstringPlayerName(text)
+    EndTextCommandDisplayHelp(0, false, true, duration or 5000)
 end

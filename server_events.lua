@@ -3,6 +3,18 @@ keepTimeThreadRunning = true
 cops = {}
 thiefs = {}
 hiddenThiefs = {}
+Queue = {}
+function Queue:new()
+    local object = {}
+    
+    object.list = {}
+    object.offset = 1
+    
+    self.__index = self
+    return setmetatable(object, self)
+end
+queue = Queue:new()
+changeHiddenStateNextPing = false
 
 RegisterNetEvent("PING:startChase")
 AddEventHandler("PING:startChase",function()
@@ -72,60 +84,41 @@ AddEventHandler("PING:registerCivilian_server",function(oldrole)
         end
         -- table.remove(cops,source)
     end
+    TriggerClientEvent("PING:RemovePlayerBlip",-1,source)
     TriggerClientEvent("PING:StopDisplayingTime",source)
     -- TriggerClientEvent("PING:StopDisplayingVisibility",source)
 end)
 
-RegisterNetEvent("PING:Update_Updatetime")
-AddEventHandler("PING:Update_Updatetime",function(newtime)
+RegisterNetEvent("PING:Update_Pingtime")
+AddEventHandler("PING:Update_Pingtime",function(newtime)
     updateTime = newtime
 end)
+RegisterNetEvent("PING:Update_startTime",function(newtime)
+    TriggerClientEvent("PING:Update_startTime_cl",-1,newtime)
+end)
+
+-- RegisterNetEvent("PING:Update_NumberOfHides",function(newMaxHides)
+--     TriggerClientEvent("PING:Update_NumberOfHides_cl",-1,newMaxHides)
+-- end)
 
 RegisterNetEvent("PING:UpdateOFF_sv")
 AddEventHandler("PING:UpdateOFF_sv",function()
-    for index,thief in ipairs(thiefs) do
-        if thief.source == source then
-            thief.hidden = true
-            thiefs[index] = thief
-        end
-    end
-    -- print("Turning Off")
-    -- set = utils_Set(hiddenThiefs)
-    -- local thiefstate = set[source]
-    -- print("source", source);
-    -- print("thiefstate", thiefstate);
-    -- print("in Hidden",hiddenThiefs[source])
-    -- print("in Hidden 1",hiddenThiefs[1])
-    -- if thiefstate == nil then
-    --     print("numberhidden", #hiddenThiefs);
-    --     -- table.insert(hiddenThiefs,source)
-    --     set[source] = true
-    --     print("numberhidden", #hiddenThiefs);
-    --     print("in Hidden",hiddenThiefs[source])
+    changeHiddenStateNextPing = true
+    local set = {source = source, state = true}
+    queue:enqueue(set)
+    -- for index,thief in ipairs(thiefs) do
+    --     if thief.source == source then
+    --         thief.hidden = true
+    --         thiefs[index] = thief
+    --     end
     -- end
 end)
 
 RegisterNetEvent("PING:UpdateON_sv")
 AddEventHandler("PING:UpdateON_sv",function()
-    for index,thief in ipairs(thiefs) do
-        if thief.source == source then
-            thief.hidden = false
-            thiefs[index] = thief
-        end
-    end
-    -- print("Turning ON")
-    -- print("source", source);
-    -- set = utils_Set(hiddenThiefs)
-    -- local thiefstate = set[source]
-    -- print("thiefstate", thiefstate);
-    -- print("in Hidden",hiddenThiefs[source])
-    -- print("in Hidden 1",hiddenThiefs[1])
-    -- numberhidden = #hiddenThiefs
-    -- print("numberhidden", #hiddenThiefs);
-    -- -- table.remove(hiddenThiefs,source)
-    -- -- set[source] = nil
-    -- hiddenThiefs[source] = nil
-    -- print("numberhidden", #hiddenThiefs);
+    changeHiddenStateNextPing = true
+    local set = {source = source, state = false}
+    queue:enqueue(set)
 end)
 
 
@@ -134,6 +127,10 @@ AddEventHandler("PING:deliverMessage",function(message)
     TriggerClientEvent("PING:chatMessage",-1,message)
 end)
 
+
+RegisterNetEvent("PING:ThiefLost", function()
+    TriggerClientEvent("PING:ThiefLost_cl",-1)
+end)
 
 RegisterNetEvent("PING:slowdownCops",function()
     print("Slowing down Cops")
@@ -156,3 +153,66 @@ end)
 RegisterNetEvent("PING:removeItemBox",function(index)
     TriggerClientEvent("PING:removeItemBox",-1,index)
 end)
+-- Defining Queue
+
+
+function Queue:length()
+    return #self.list - self.offset
+end
+
+function Queue:isEmpty()
+    return #self.list == 0
+end
+
+function Queue:enqueue(item)
+    table.insert(self.list, item)
+    return self
+end
+
+function Queue:print()
+    local str = 'Peek --> '
+    for i = 1, #self.list do
+        str = i == #self.list and str..tostring(self.list[i]) or str..tostring(self.list[i])..', ' 
+    end
+    print(str)
+end
+
+function Queue:copy()
+    if not self:isEmpty() then
+        local newQueue = self:new()
+
+        for i = 1, #self.list do
+            table.insert(newQueue.list, self.list[i])
+        end
+
+    return newQueue
+    end
+end
+
+function Queue:peek()
+    if not self:isEmpty() then
+        return self.list[self.offset]
+    end
+    return nil
+end
+
+function Queue:dequeue()
+    if self:isEmpty() then return nil end
+    
+    local item = self.list[self.offset]
+    self.offset = self.offset + 1
+    if (self.offset * 2) >= #self.list then
+        self:optimize()
+    end
+    return item
+end
+
+function Queue:optimize()
+    local pos, new = 1, {}
+    for i = self.offset, #self.list do
+        new[pos] = self.list[i]
+        pos = pos + 1
+    end
+    self.offset = 1
+    self.list = new
+end

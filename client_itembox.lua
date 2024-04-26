@@ -10,7 +10,8 @@ function selectAction()
         SpawnRamp,
         fixcar,
         slowCops,
-        slowThiefs
+        slowThiefs,
+        changeVehicle
     }
     local function_to_call = choose_element(Actions, probabilities_Actions)
     function_to_call()

@@ -176,7 +176,7 @@ end
 function changeVehicle()
     local player = GetPlayerPed(-1)
     local currentVehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-    local newVehicle = "adder"--choose_element(Vehicles, probabilities_vehicles)
+    local newVehicle = choose_element(VehicleType, probabilities_vehicle)
     
     RequestModel(newVehicle)
     
@@ -191,5 +191,6 @@ function changeVehicle()
         local vehicle = CreateVehicle(newVehicle, GetEntityCoords(player), GetEntityHeading(player), true, false)
         TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
         SetVehicleForwardSpeed(vehicle, currentSpeed)
+        SetVehicleEngineOn(vehicle, true, true ,false)
     end
 end

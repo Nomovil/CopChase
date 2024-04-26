@@ -7,8 +7,8 @@ fontNumber = 4
 
 COUNTDOWNTIME = 15 
 -- Config for Change Vehicle
-VehicleType = {}
-probabilities_vehicle = {}
+VehicleType = {"adder","zentorno","pfister811","sultanrs","comet4","coureur","everon","everon2","issi7","raptor","sm722","veto2d","tornado4","shotaro"} -- 14 Items
+probabilities_vehicle = {0.07,0.07,0.07,0.07,0.07,0.072,0.07,0.07,0.07,0.07,0.07,0.07,0.07,0.07}
 
 -- Config for Slowdown
 RESETTIME_SLOWDOWN = 10
@@ -28,17 +28,18 @@ probabilities_WantedLevels = {0.2,0.2,0.3,0.2,0.1}
 -- Config  for SpawnRamp
 RampType = {"prop_mp_ramp_01", "prop_mp_ramp_02", "prop_mp_ramp_03"}
 probabilities_Ramp = {0.3, 0.5, 0.2}
-RESTTIME_RAMP = 5
+RESTTIME_RAMP = 10
 -- Config  for SelectAction (Itembox)
 probabilities_Actions = {
     0.1, -- Slowdown
     0.2, -- add_speedbooster
     0.2, -- InvertVehicleControls
-    0.1, -- PlayerWantedLevel
+    0.001, -- PlayerWantedLevel
     0.2, -- SpawnRamp
     0.01, -- fixcar
     0.09, -- slowCops
-    0.1 --  slowThiefs
+    0.1, --  slowThiefs
+    0.099 -- change Vehicle
 }
 
 
@@ -93,4 +94,4 @@ StartCounterLocationY = 0.4
 -- Hide Marker
 HideMarkerRadius = 50.0
 COUNTDOWNTIME = 15 
-TESTING = true
+-- TESTING = true

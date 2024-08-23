@@ -1,29 +1,3 @@
-function drawTxt(content, font, colour, scale, x, y)
-    SetTextFont(font)
-    SetTextScale(scale, scale)
-    SetTextColour(colour[1],colour[2],colour[3], 255)
-    SetTextEntry("STRING")
-    SetTextDropShadow(0, 0, 0, 0,255)
-    SetTextDropShadow()
-    SetTextEdge(4, 0, 0, 0, 255)
-    SetTextOutline()
-    AddTextComponentString(content)
-    DrawText(x, y)
-end
-
-
-function notifyPlayer(source,msg)
-    TriggerClientEvent('chatMessage', source, "[Ping]", {255, 0, 0}, msg)
-end
-function printToPlayer(msg)
-    TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
-        multiline = true,
-        args = {"[Ping]", msg}
-        }
-    )
-end
-
 function disp_time(time)
     local days = math.floor(time/86400)
     local remaining = time % 86400
@@ -66,25 +40,41 @@ end
 function getRemainingCountdownTime(finishtime)
    return math.floor((finishtime - GetGameTimer())/1000) 
 end
--- Utility function to display HUD text
-function DrawHudText(text,colour,coordsx,coordsy,scalex,scaley)
-    SetTextFont(4)
-    SetTextProportional(7)
-    SetTextScale(scalex, scaley)
-    local colourr,colourg,colourb,coloura = table.unpack(colour)
-    SetTextColour(colourr,colourg,colourb, coloura)
-    SetTextDropshadow(0, 0, 0, 0, coloura)
-    SetTextEdge(1, 0, 0, 0, coloura)
-    SetTextDropShadow()
-    SetTextOutline()
-    SetTextEntry("STRING")
-    AddTextComponentString(text)
-    DrawText(coordsx,coordsy)
+
+function MonitorMisterXState()
+    Citizen.CreateThread(function()
+        -- while( checkPlayerIsInVehicle()) do
+        --     Wait(100)
+        -- end
+        startTime = GetGameTimer()
+        showTimer = true
+        while (showTimer and checkPlayerIsInVehicle()) do
+            seconds = math.ceil((GetGameTimer()-startTime)/1000)
+            seconds_text = disp_time(seconds)
+            drawTxt(seconds_text, 4,{255,255,255},0.7,0.85,0.01)
+            Citizen.Wait(0)
+        end
+        local message = ("MisterX escaped for: %s"):format(seconds_text)
+        -- printToPlayer(mesage)
+        TriggerServerEvent("PING:deliverMessage",message)
+
+
+        TriggerServerEvent("PING:ThiefLost")
+    end)
 end
 
-
-function helpMessage(text, duration)
-    BeginTextCommandDisplayHelp("STRING")
-    AddTextComponentSubstringPlayerName(text)
-    EndTextCommandDisplayHelp(0, false, true, duration or 5000)
+function createSoppwatchThread()
+    Citizen.CreateThread(function()
+        startTime = GetGameTimer()
+        showTimer = true
+        while (showTimer) do
+            seconds = math.ceil((GetGameTimer()-startTime)/1000)
+            seconds_text = disp_time(seconds)
+            drawTxt(seconds_text, 4,{255,255,255},0.7,0.85,0.01)
+            Citizen.Wait(0)
+        end
+        -- local message = ("MisterX escaped for: %s"):format(seconds_text)
+        -- -- printToPlayer(mesage)
+        -- TriggerServerEvent("PING:deliverMessage",message)
+    end)
 end

@@ -142,7 +142,12 @@ RegisterNetEvent("PING:slowdownThief",function()
 end)
 
 RegisterNetEvent("PING:deleteItemBox",function(index)
+    if index > #itemboxes then
+        print("Index out of bounds: "..index .. " > " .. #itemboxes) 
+        return
+    end
     table.remove(itemboxes, index)
+    TriggerClientEvent("PING:syncItemBoxes", source, itemboxes)
 end)
 
 RegisterNetEvent("PING:removeItemBox")

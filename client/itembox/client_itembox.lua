@@ -89,6 +89,10 @@ Citizen.CreateThread(function()
             goto continue
         end
         for index, box in ipairs(itemboxes) do
+            if index > #itemboxes then
+                error("Index out of bounds")
+                goto continue
+            end
             MarkerisinReach(box,index)
         end
         ::continue::
@@ -140,9 +144,12 @@ function MarkerisinReach(box, index)
             fixcar()
         else
             -- printToPlayer("Performing Action for Itembox: " .. index)
-            selectAction()
+
+            -- selectAction()
         end
     elseif distance >= ITEMBOX_MAX_DISTANCE then
+        print("distance: " .. distance .. " max distance: " .. ITEMBOX_MAX_DISTANCE)
+        print("Removing Itembox: " .. index)
         TriggerServerEvent("PING:deleteItemBox", index)
     end
 end

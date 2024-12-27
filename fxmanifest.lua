@@ -7,20 +7,20 @@ description 'CopChase'
 version '0.0.4'
 
 client_scripts {
-    "client_commands.lua",
-    "client_events.lua",
-    "client_helper_fkt.lua",
-    "config.lua",
-    "gui_client.lua",
-    "client_itembox.lua",
-    "client_itembox_actions.lua",
+    "client/commands/client_commands.lua",
+    "client/events/client_events.lua",
+    "client/helpers/client_helper_fkt.lua",
+    "config/config.lua",
+    "client/gui/gui_client.lua",
+    "client/itembox/client_itembox.lua",
+    "client/itembox/client_itembox_actions.lua",
     "develpoment_client.lua"
 }
 
 server_scripts {
-    "server_events.lua",
-    "server_threads.lua",
-    "server_itembox.lua",
+    "server/events/server_events.lua",
+    "server/threads/server_threads.lua",
+    "server/itembox/server_itembox.lua",
 }
 
 ui_page 'nui/nui.html'

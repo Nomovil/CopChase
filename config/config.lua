@@ -1,100 +1,13 @@
--- Ping Timer
-screenPosX = 0.150                    -- X coordinate (top left corner of HUD)
-screenPosY = 0.750  
-locationColorText = {255, 255, 255}
-scaleFactor = 0.4
-fontNumber = 4
-
+-- Game Settings
 COUNTDOWNTIME = 15 
--- Config for Change Vehicle
-VehicleType = {"adder","zentorno","pfister811","sultanrs","comet4","coureur","everon","everon2","issi7","raptor","sm722","veto2d","tornado4","shotaro"} -- 14 Items
-probabilities_vehicle = {0.07,0.07,0.07,0.07,0.07,0.072,0.07,0.07,0.07,0.07,0.07,0.07,0.07,0.07}
-
--- Config for Slowdown
-RESETTIME_SLOWDOWN = 10
-MAX_SPEED_SLOWED = 10.0
-
--- Config for Speedup
-RESETTIME_SPEEDUP = 0.1
-BOOST_FORCE = 80.0
-
--- Config for Invert Controls
-RESTETTIME_INVERT_CRTL = 10
-
--- Config for SetPlayerWantedLevel
-RESTTIME_WANTED_LEVEL = 10 --seconds
-WantedLevels = {1,2,3,4,5}
-probabilities_WantedLevels = {0.2,0.2,0.3,0.2,0.1}
--- Config  for SpawnRamp
-RampType = {"prop_mp_ramp_01", "prop_mp_ramp_02", "prop_mp_ramp_03"}
-probabilities_Ramp = {0.3, 0.5, 0.2}
-RESTTIME_RAMP = 10
--- Config  for SelectAction (Itembox)
-probabilities_Actions = {
-    0.1, -- Slowdown
-    0.2, -- add_speedbooster
-    0.2, -- InvertVehicleControls
-    0.1, -- PlayerWantedLevel
-    0.2, -- SpawnRamp
-    0.01, -- fixcar
-    0.09, -- slowCops
-    0.1 --  slowThiefs
-    -- 0.099 -- change Vehicle
-}
+MAX_NUMBER_HIDES = 2
+HideMarkerRadius = 50.0
 
 
---config for spawncchanges Repair Icon:
-probabilities_itemboxtype = {
-    0.95, -- Normal Box
-    0.05 -- Repai Box
-}
 
-
---  Item Box Settings
-NORMAL_BOX_MARKER = 32
-REPAIR_BOX_MARKER = 36
-MARKERRANGE = 5
-ITEMBOX_MAX_DISTANCE = 100
-GUI_UPDATE_TIME = 100 -- ms
-
--- Time for Random Generation of an Itembox
-RANDOM_ITEMBOX_SPAWN_TIMER = 120 -- seconds
-
+-- General Settings
 ACTION_BTN_NUMBER = 19
 DEV_BTN_NUMBER = 132
-
-RoleNameLocationX = 0.15
-RoleNameLocationY = 0.01
-RoleNameScale = 0.7
--- Mister X  
-MisterXRoleName = "Thief"
-MisterXColor = {183,20,163}
--- COP
-CopRoleName = "Cop"
-CopColor = {35,40,198}
-
-
--- Hide Counter
-HideCounterColor = {255,255,255}
-HideCounterScale = 0.4
-HideCounterLocationX = 0.016
-HideCounterLocationY = 0.750
-MAX_NUMBER_HIDES = 2
-
--- Start Message
-StartMessageColor = {20,183,43,255}
-StartMessageLocationX = 0.5
-StartMessageLocationY = 0.4
--- Start Counter
-StartCounterColor = {255,191,0,255}
-StartCounterLocationX = 0.5
-StartCounterLocationY = 0.4
-
-
--- Hide Marker
-HideMarkerRadius = 50.0
-COUNTDOWNTIME = 15 
 TESTING = false
 
 
-RANDOM_ITEMBOX_SPAWN_ON = true

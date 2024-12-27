@@ -100,7 +100,7 @@ end)
 
 function getBoxType()
     local boxtype = choose_element({NORMAL_BOX_MARKER
-    ,REPAIR_BOX_MARKER},probabilities_itemboxtype)
+    ,REPAIR_BOX_MARKER},item_box_probabilities)
     return boxtype
 end
 

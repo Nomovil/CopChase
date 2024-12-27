@@ -58,3 +58,13 @@ function Draw3DText(x,y,z,textInput,colour,fontId,scaleX,scaleY)
     DrawText(0.0, 0.0)
     ClearDrawOrigin()
 end
+
+RegisterCommand("pauseGame",function()
+    print("Pausing Game")
+    PauseClock(false)
+end,false)
+
+RegisterCommand("unpauseGame",function()
+    print("Unpausing Game")
+    PauseClock(true)
+end,false)

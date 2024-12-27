@@ -7,12 +7,12 @@ description 'CopChase'
 version '0.0.5'
 
 client_scripts {
-    "client/commands/client_commands.lua",
-    "client/events/client_events.lua",
-    "client/helpers/client_helper_fkt.lua",
     "config/config.lua",
     "config/gui_config.lua",
     "config/itembox_config.lua",
+    "client/commands/client_commands.lua",
+    "client/events/client_events.lua",
+    "client/helpers/client_helper_fkt.lua",
     "client/gui/gui_client.lua",
     "client/itembox/client_itembox.lua",
     "client/itembox/client_itembox_actions.lua",

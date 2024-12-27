@@ -18,6 +18,7 @@ function createNewItemBox(pos, boxtype)
 end
 
 function removeItemBox(index)
+    print("Removing Itembox")
     if index > #itemboxes then
         return
     end

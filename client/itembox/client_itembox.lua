@@ -84,7 +84,7 @@ end)
 -- Main Thread checks if Users is in reach of marker
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(500)
+        Citizen.Wait(100)
         if not IsPedInAnyVehicle(PlayerPedId(), false) then
             goto continue
         end

@@ -10,8 +10,7 @@ function selectAction()
         SpawnRamp,
         fixcar,
         slowCops,
-        slowThiefs,
-        changeVehicle
+        slowThiefs
     }
     local function_to_call = choose_element(Actions, probabilities_Actions)
     function_to_call()
@@ -33,14 +32,28 @@ function choose_element(elements, probabilities)
         cumulative_sum = cumulative_sum + prob
         cumulative_probabilities[i] = cumulative_sum
     end
+    if cumulative_sum < 1 then
+        error(string.format("Die Summe der Wahrscheinlichkeiten muss 1 ergeben. Summe: %f", cumulative_sum))
+        return lambda: print("Platzhalter")
+    end
+
     -- Zufallszahl zwischen 0 und 1 generieren
     local random_value = math.random()
+    if random_value > cumulative_sum then
+        error(string.format("Random Value: %f, Cumulative Sum: %f", random_value, cumulative_sum))
+    end 
+
     -- Element auswählen basierend auf der Zufallszahl und den kumulativen Wahrscheinlichkeiten
     for i, cumulative_prob in ipairs(cumulative_probabilities) do
         if random_value <= cumulative_prob then
-            return elements[i]
+            local function_to_call = elements[i]
+            if function_to_call == nil then
+                error(string.format("Element an Position %d ist nil", i))
+            end
+            return function_to_call
         end
     end
+    error(string.format("Kein Element ausgewählt. Random Value: %f", random_value))
 end
 
 

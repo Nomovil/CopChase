@@ -34,12 +34,12 @@ probabilities_Actions = {
     0.1, -- Slowdown
     0.2, -- add_speedbooster
     0.2, -- InvertVehicleControls
-    0.001, -- PlayerWantedLevel
+    0.1, -- PlayerWantedLevel
     0.2, -- SpawnRamp
     0.01, -- fixcar
     0.09, -- slowCops
-    0.1, --  slowThiefs
-    0.099 -- change Vehicle
+    0.1 --  slowThiefs
+    -- 0.099 -- change Vehicle
 }
 
 
@@ -66,8 +66,8 @@ DEV_BTN_NUMBER = 132
 RoleNameLocationX = 0.15
 RoleNameLocationY = 0.01
 RoleNameScale = 0.7
--- Mister X 
-MisterXRoleName = "MisterX"
+-- Mister X  
+MisterXRoleName = "Thief"
 MisterXColor = {183,20,163}
 -- COP
 CopRoleName = "Cop"
@@ -77,7 +77,7 @@ CopColor = {35,40,198}
 -- Hide Counter
 HideCounterColor = {255,255,255}
 HideCounterScale = 0.4
-HideCounterLocationX = 0.16
+HideCounterLocationX = 0.016
 HideCounterLocationY = 0.750
 MAX_NUMBER_HIDES = 2
 

@@ -30,3 +30,4 @@ files {
     'nui/script.js',
     'nui/images/*'
 }
+export "fixcar"

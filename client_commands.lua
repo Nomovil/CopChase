@@ -12,6 +12,7 @@ RegisterCommand("cop",function(source)
         showRole = true
         showRoleTxt()
         -- printToPlayer("Registered as Cop")
+        giveTaser()
     else
         printToPlayer("Can't be a Cop if you are a Thief")
     end
@@ -34,6 +35,7 @@ RegisterCommand("normal",function(source)
     role = "Civi"
     addBlipsAllowed = false
     showRole = false
+    removeTaser()
     for index,blip in ipairs(blips) do
         RemoveBlip(blip)
     end
@@ -79,3 +81,13 @@ end,false)
 RegisterCommand("clearitems",function()
     itemboxes = {}
 end)
+
+
+
+function giveTaser()
+    GiveWeaponToPed(GetPlayerPed(-1), "stun_range", 50, false, true)
+end
+
+function removeTaser()
+    RemoveWeaponFromPed(GetPlayerPed(-1), "stun_range")
+end

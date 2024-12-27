@@ -19,6 +19,14 @@ function disp_time(time)
     return answer
 end
 
+-- check if player got tasered
+function checkIfPlayerGotTasered()
+    local ped = GetPlayerPed(-1)
+    local tasered = IsPedBeingStunned(ped, 0)
+    local inverted_tasered = not tasered
+    return inverted_tasered
+end
+
 function checkPlayerIsInVehicle()
     local ped = GetPlayerPed(-1)
     return GetVehiclePedIsIn(ped,false) > 0
@@ -48,13 +56,15 @@ function MonitorMisterXState()
         -- end
         startTime = GetGameTimer()
         showTimer = true
-        while (showTimer and checkPlayerIsInVehicle()) do
+        -- while (showTimer and checkPlayerIsInVehicle()) do
+        while (showTimer and checkIfPlayerGotTasered()) do
             seconds = math.ceil((GetGameTimer()-startTime)/1000)
             seconds_text = disp_time(seconds)
             drawTxt(seconds_text, 4,{255,255,255},0.7,0.85,0.01)
             Citizen.Wait(0)
 end
-        local message = ("MisterX escaped for: %s"):format(seconds_text)
+        local name = GetPlayerName(PlayerId())
+        local message = ("%s escaped for: %s"):format(name,seconds_text)
         -- printToPlayer(mesage)
         TriggerServerEvent("PING:deliverMessage",message)
 

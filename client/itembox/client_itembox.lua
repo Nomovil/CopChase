@@ -135,7 +135,6 @@ end
 function MarkerisinReach(box, index)
     local distance = GetDistanceBetweenCoords(box.x, box.y, box.z, GetEntityCoords(PlayerPedId()))
     if distance < MARKERRANGE then
-        print("in reach")
         TriggerServerEvent("PING:removeItemBox", index)
         if box.type == REPAIR_BOX_MARKER then
             fixcar()
@@ -144,7 +143,6 @@ function MarkerisinReach(box, index)
             selectAction()
         end
     elseif distance >= ITEMBOX_MAX_DISTANCE then
-        print("out of reach")
         TriggerServerEvent("PING:deleteItemBox", index)
     end
 end

@@ -139,7 +139,7 @@ end
 slowCops_visible = false
 slowCops_alpha = 1.0
 function slowCops()
-    print("SlowingCops")
+    -- print("SlowingCops")
     slowCops_visible = true
     Citizen.CreateThreadNow(function()
         TriggerServerEvent("PING:slowdownCops")
@@ -158,7 +158,7 @@ end
 slowThiefs_visible = false
 slowThiefs_alpha = 1.0
 function slowThiefs()
-    print("Slowing Thiefs")
+    -- print("Slowing Thiefs")
     slowThiefs_visible = true
     CreateThread(function()
         TriggerServerEvent("PING:slowdownThief")

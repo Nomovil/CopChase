@@ -4,7 +4,7 @@ games { 'gta5' }
 
 author 'nomovil'
 description 'CopChase'
-version '0.0.3'
+version '0.0.4'
 
 client_scripts {
     "client_commands.lua",
@@ -19,7 +19,8 @@ client_scripts {
 
 server_scripts {
     "server_events.lua",
-    "server_threads.lua"
+    "server_threads.lua",
+    "server_itembox.lua",
 }
 
 ui_page 'nui/nui.html'

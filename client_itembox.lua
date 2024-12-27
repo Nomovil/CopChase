@@ -105,23 +105,15 @@ function getBoxType()
 end
 
 function createNewItemBox(pos, boxtype)
-
-    local box = {
-        x = pos.x,
-        y = pos.y,
-        z = pos.z,
-        type = boxtype
-    }
-    table.insert(itemboxes,box)
+    -- Removed client-side storage
 end
 
 function action_button_pressed()
     if IsControlJustReleased(0, ACTION_BTN_NUMBER) then
         local pos = getPosinHeading(PlayerPedId())
-        -- selectAction()
         boxtype = getBoxType()
-        TriggerServerEvent("PING:createItemBox",pos, boxtype)
-
+        -- print("Trigger Server Event, create Itembox")
+        TriggerServerEvent("PING:createItemBox", pos, boxtype)
     end
 end
 
@@ -135,23 +127,23 @@ function drawExistingItemBox()
             green = 255
             blue = 255
         end
-        DrawMarker(box.type,box.x,box.y,box.z,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255, true, true, 2, nil, nil, false)
-        Draw3DText(box.x, box.y, box.z-0.600, index, {red,green,blue,255}, 4, 0.3, 0.3)
+        DrawMarker(box.type, box.x, box.y, box.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255, true, true, 2, nil, nil, false)
+        Draw3DText(box.x, box.y, box.z - 0.600, index, {red, green, blue, 255}, 4, 0.3, 0.3)
     end
 end
 
-function MarkerisinReach(box,index)
-    local distance = GetDistanceBetweenCoords(box.x,box.y,box.z,GetEntityCoords(PlayerPedId()))
+function MarkerisinReach(box, index)
+    local distance = GetDistanceBetweenCoords(box.x, box.y, box.z, GetEntityCoords(PlayerPedId()))
     if distance < MARKERRANGE then
-        TriggerServerEvent("PING:removeItemBox",index)
+        TriggerServerEvent("PING:removeItemBox", index)
         if box.type == REPAIR_BOX_MARKER then
             fixcar()
         else
-            printToPlayer("Performing Action for Itembox: " .. index)
-            -- selectAction()
+            -- printToPlayer("Performing Action for Itembox: " .. index)
+            selectAction()
         end
     elseif distance >= ITEMBOX_MAX_DISTANCE then
-        table.remove(itemboxes,index)
+        TriggerServerEvent("PING:removeItemBox", index)
     end
 end
 
@@ -166,23 +158,27 @@ function getPosinHeading(playerid)
 end
 
 
-RegisterNetEvent("PING:createItemBox",function(pos,boxtype)
+RegisterNetEvent("PING:createItemBox_cl",function(pos,boxtype)
     createNewItemBox(pos, boxtype)
 end)
 
 RegisterNetEvent("PING:removeItemBox", function(index)
-    print("Removing Itembox: " .. index)
-    printToPlayer("Removing Itembox: " .. index)
-    if index > #itemboxes then
-        -- error("Index out of bounds: " .. index .. " > " .. #itemboxes)
-        return
-    end
-    table.remove(itemboxes,index)
-    Citizen.Wait(100)
+    -- print("Removing Itembox: " .. index)
+    -- printToPlayer("Removing Itembox: " .. index)
+    -- Removed client-side storage
 end)
 
+RegisterNetEvent("PING:syncItemBoxes")
+AddEventHandler("PING:syncItemBoxes", function(serverItemBoxes)
+    itemboxes = serverItemBoxes
+end)
 
-
+-- Request sync when the resource starts
+AddEventHandler("onClientResourceStart", function(resourceName)
+    if GetCurrentResourceName() == resourceName then
+        TriggerServerEvent("PING:syncItemBoxes")
+    end
+end)
 
 function show_number_of_speedboosts()
     while true do

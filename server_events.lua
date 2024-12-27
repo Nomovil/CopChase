@@ -133,26 +133,33 @@ RegisterNetEvent("PING:ThiefLost", function()
 end)
 
 RegisterNetEvent("PING:slowdownCops",function()
-    print("Slowing down Cops")
+    -- print("Slowing down Cops")
     for _,cop in ipairs(cops) do
         TriggerClientEvent("PING:slowDown",cop)
     end
 end)
 
 RegisterNetEvent("PING:slowdownThief",function()
-    print("Slowing down Thiefs")
+    -- print("Slowing down Thiefs")
     for _,thief in ipairs(thiefs) do
         TriggerClientEvent("PING:slowDown",thief.source)
     end
 end)
 
-RegisterNetEvent("PING:createItemBox",function(pos, boxtype)
-    TriggerClientEvent("PING:createItemBox",-1,pos, boxtype)
+RegisterNetEvent("PING:removeItemBox")
+AddEventHandler("PING:removeItemBox", function(index)
+    removeItemBox(index)
 end)
 
-RegisterNetEvent("PING:removeItemBox",function(index)
-    TriggerClientEvent("PING:removeItemBox",-1,index)
+RegisterNetEvent("PING:syncItemBoxes")
+AddEventHandler("PING:syncItemBoxes", function()
+    TriggerClientEvent("PING:syncItemBoxes", source, itemboxes)
 end)
+RegisterNetEvent("PING:createItemBox", function(pos, boxtype)
+    createNewItemBox(pos, boxtype)
+end)
+
+
 -- Defining Queue
 
 

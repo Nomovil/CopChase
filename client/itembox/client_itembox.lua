@@ -1,4 +1,5 @@
 itemboxes = {}
+local lastActionTime = 0
 
 function selectAction()
 
@@ -113,7 +114,9 @@ function createNewItemBox(pos, boxtype)
 end
 
 function action_button_pressed()
-    if IsControlJustReleased(0, ACTION_BTN_NUMBER) then
+    local currentTime = GetGameTimer() / 1000 -- GetGameTimer gibt die Zeit in Millisekunden zurück, daher teilen wir durch 1000, um Sekunden zu erhalten
+    if IsControlJustReleased(0, ACTION_BTN_NUMBER) and (currentTime - lastActionTime) >= debounceInterval then
+        lastActionTime = currentTime
         local pos = getPosinHeading(PlayerPedId())
         boxtype = getBoxType()
         -- print("Trigger Server Event, create Itembox")
@@ -132,7 +135,9 @@ function drawExistingItemBox()
             blue = 255
         end
         DrawMarker(box.type, box.x, box.y, box.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255, true, true, 2, nil, nil, false)
-        Draw3DText(box.x, box.y, box.z - 0.600, index, {red, green, blue, 255}, 4, 0.3, 0.3)
+        if TESTING then
+            Draw3DText(box.x, box.y, box.z - 0.600, index, {red, green, blue, 255}, 4, 0.3, 0.3)
+        end
     end
 end
 

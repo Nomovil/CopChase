@@ -146,8 +146,8 @@ RegisterNetEvent("PING:slowdownThief",function()
     end
 end)
 
-RegisterNetEvent("PING:createItemBox",function(pos)
-    TriggerClientEvent("PING:createItemBox",-1,pos)
+RegisterNetEvent("PING:createItemBox",function(pos, boxtype)
+    TriggerClientEvent("PING:createItemBox",-1,pos, boxtype)
 end)
 
 RegisterNetEvent("PING:removeItemBox",function(index)

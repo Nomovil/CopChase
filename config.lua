@@ -94,4 +94,7 @@ StartCounterLocationY = 0.4
 -- Hide Marker
 HideMarkerRadius = 50.0
 COUNTDOWNTIME = 15 
--- TESTING = true
+TESTING = true
+
+
+RANDOM_ITEMBOX_SPAWN_ON = true

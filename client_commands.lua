@@ -69,7 +69,12 @@ end,false)
 -- end,false)
 
 RegisterCommand("startChase",function(source)
-    TriggerServerEvent("PING:startChase")
+    if role == "Cop" or role == "Thief" then
+        TriggerServerEvent("PING:startChase")
+    else
+        printToPlayer("You need to be a Cop or Thief to start a chase")
+    end
+    -- TriggerServerEvent("PING:startChase")
 end,false)
 
 RegisterCommand("endChase",function(source)

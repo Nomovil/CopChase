@@ -32,7 +32,7 @@ function choose_element(elements, probabilities)
         cumulative_sum = cumulative_sum + prob
         cumulative_probabilities[i] = cumulative_sum
     end
-    if cumulative_sum < 1 then
+    if cumulative_sum < 0.99999 then
         error(string.format("Die Summe der Wahrscheinlichkeiten muss 1 ergeben. Summe: %f", cumulative_sum))
         return lambda: print("Platzhalter")
     end
@@ -72,10 +72,11 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
-    while true do
+    while RANDOM_ITEMBOX_SPAWN_ON do
         local pos = getPosinHeading(PlayerPedId())
         -- selectAction()
-        TriggerServerEvent("PING:createItemBox",pos)
+        boxtype = getBoxType()
+        TriggerServerEvent("PING:createItemBox",pos, boxtype)
         Citizen.Wait(RANDOM_ITEMBOX_SPAWN_TIMER*1000)
     end
 end)
@@ -83,7 +84,7 @@ end)
 -- Main Thread checks if Users is in reach of marker
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(100)
+        Citizen.Wait(500)
         if not IsPedInAnyVehicle(PlayerPedId(), false) then
             goto continue
         end
@@ -97,11 +98,14 @@ end)
 
 -- Itmebox Handling
 
-
-
-function createNewItemBox(pos)
+function getBoxType()
     local boxtype = choose_element({NORMAL_BOX_MARKER
-,REPAIR_BOX_MARKER},probabilities_itemboxtype)
+    ,REPAIR_BOX_MARKER},probabilities_itemboxtype)
+    return boxtype
+end
+
+function createNewItemBox(pos, boxtype)
+
     local box = {
         x = pos.x,
         y = pos.y,
@@ -115,7 +119,8 @@ function action_button_pressed()
     if IsControlJustReleased(0, ACTION_BTN_NUMBER) then
         local pos = getPosinHeading(PlayerPedId())
         -- selectAction()
-        TriggerServerEvent("PING:createItemBox",pos)
+        boxtype = getBoxType()
+        TriggerServerEvent("PING:createItemBox",pos, boxtype)
 
     end
 end
@@ -131,6 +136,7 @@ function drawExistingItemBox()
             blue = 255
         end
         DrawMarker(box.type,box.x,box.y,box.z,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255, true, true, 2, nil, nil, false)
+        Draw3DText(box.x, box.y, box.z-0.600, index, {red,green,blue,255}, 4, 0.3, 0.3)
     end
 end
 
@@ -141,7 +147,8 @@ function MarkerisinReach(box,index)
         if box.type == REPAIR_BOX_MARKER then
             fixcar()
         else
-            selectAction()
+            printToPlayer("Performing Action for Itembox: " .. index)
+            -- selectAction()
         end
     elseif distance >= ITEMBOX_MAX_DISTANCE then
         table.remove(itemboxes,index)
@@ -159,11 +166,17 @@ function getPosinHeading(playerid)
 end
 
 
-RegisterNetEvent("PING:createItemBox",function(pos)
-    createNewItemBox(pos)
+RegisterNetEvent("PING:createItemBox",function(pos,boxtype)
+    createNewItemBox(pos, boxtype)
 end)
 
 RegisterNetEvent("PING:removeItemBox", function(index)
+    print("Removing Itembox: " .. index)
+    printToPlayer("Removing Itembox: " .. index)
+    if index > #itemboxes then
+        -- error("Index out of bounds: " .. index .. " > " .. #itemboxes)
+        return
+    end
     table.remove(itemboxes,index)
     Citizen.Wait(100)
 end)

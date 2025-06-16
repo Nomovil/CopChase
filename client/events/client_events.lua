@@ -95,7 +95,7 @@ end)
 
 RegisterNetEvent("PING:startChase_cl")
 AddEventHandler("PING:startChase_cl",function(source)
-    createSoppwatchThread()
+    CreateStopwatchThread()
     if role == "Civi" then
         return
     end
@@ -103,24 +103,24 @@ AddEventHandler("PING:startChase_cl",function(source)
         number_of_hides = MAX_NUMBER_HIDES
         MonitorMisterXState()
         showNumberofHides()
-        modifyRunnerCar()
-        finishtime = setCountdownTime(2)
-        while getRemainingCountdownTime(finishtime) > 0 do
+        AdjustRunnerCarSettings()
+        finishtime = SetCountdownTime(2)
+        while GetRemainingCountdownTime(finishtime) > 0 do
             Citizen.Wait(1) 
             DrawHudText("START", StartMessageColor,StartMessageLocationX,StartMessageLocationY,4.0,4.0)
         end
         return
     end
-    startCountdown(COUNTDOWNTIME)
-    modifyCopCar()
-    while getremainingTime() > 0 do
+    StartCountdown(COUNTDOWNTIME)
+    AdjustCopCarSettings()
+    while GetRemainingTime() > 0 do
         Citizen.Wait(1)
-        DrawHudText(getremainingTime(), StartCounterColor,StartCounterLocationX,StartCounterLocationY,4.0,4.0)
+        DrawHudText(GetRemainingTime(), StartCounterColor,StartCounterLocationX,StartCounterLocationY,4.0,4.0)
             
         -- Disable acceleration/reverse until race starts
-        disableCar()
+        DisableVehicleControls()
     end
-    enableCar()
+    EnableVehicleControls()
 end)
 
 RegisterNetEvent("PING:pauseGame_cl")
@@ -129,14 +129,14 @@ AddEventHandler("PING:pauseGame_cl",function()
     while Timer.timerPaused do
         Citizen.Wait(1) 
         DrawHudText("Pause", StartMessageColor,StartMessageLocationX,StartMessageLocationY,4.0,4.0)
-        disableCar()
+        DisableVehicleControls()
     end
 end)
 
 RegisterNetEvent("PING:resumeGame_cl")
 AddEventHandler("PING:resumeGame_cl",function()
     Timer.Resume()
-    enableCar()
+    EnableVehicleControls()
 end)
 
 RegisterNetEvent("PING:slowDown",function()

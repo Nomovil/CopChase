@@ -40,7 +40,7 @@ end, false)
 
 
 RegisterCommand("modifyCar", function(source)
-    modifyCopCar()
+    AdjustCopCarSettings()
 end, false)
 
 RegisterCommand("getCarInfo", function(source)

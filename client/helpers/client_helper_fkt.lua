@@ -1,4 +1,4 @@
-function disp_time(time)
+function FormatTimeForDisplay(time)
     local days = math.floor(time / 86400)
     local remaining = time % 86400
     local hours = math.floor(remaining / 3600)
@@ -20,32 +20,32 @@ function disp_time(time)
 end
 
 -- check if player got tasered
-function checkIfPlayerGotTasered()
+function CheckIfPlayerGotTasered()
     local ped = GetPlayerPed(-1)
     local tasered = IsPedBeingStunned(ped, 0)
     local inverted_tasered = not tasered
     return inverted_tasered
 end
 
-function checkPlayerIsInVehicle()
+function CheckPlayerIsInVehicle()
     local ped = GetPlayerPed(-1)
     return GetVehiclePedIsIn(ped, false) > 0
 end
 
-function startCountdown(time_to_count_down)
+function StartCountdown(time_to_count_down)
     time = GetGameTimer() + time_to_count_down * 1000
 end
 
-function getremainingTime()
+function GetRemainingTime()
     return math.floor((time - GetGameTimer()) / 1000)
 end
 
-function setCountdownTime(time_to_count_down)
+function SetCountdownTime(time_to_count_down)
     return GetGameTimer() + time_to_count_down * 1000
 end
 
-function getRemainingCountdownTime(finishtime)
-    return math.floor((finishtime - GetGameTimer()) / 1000)
+function GetRemainingCountdownTime(countdownEndTime)
+    return math.floor((countdownEndTime - GetGameTimer()) / 1000)
 end
 
 function MonitorMisterXState()
@@ -53,12 +53,13 @@ function MonitorMisterXState()
         -- while( checkPlayerIsInVehicle()) do
         --     Wait(100)
         -- end
-        startTime = GetGameTimer()
-        showTimer = true
+        local startTime = GetGameTimer()
+        local showTimer = true
+        local seconds_text
         -- while (showTimer and checkPlayerIsInVehicle()) do
-        while (showTimer and checkIfPlayerGotTasered()) do
-            seconds = math.ceil((GetGameTimer() - startTime) / 1000)
-            seconds_text = disp_time(seconds)
+        while (showTimer and CheckIfPlayerGotTasered()) do
+            local seconds = math.ceil((GetGameTimer() - startTime) / 1000)
+            seconds_text = FormatTimeForDisplay(seconds)
             -- drawTxt(seconds_text, 4, { 255, 255, 255 }, 0.7, 0.85, 0.01)
             Citizen.Wait(0)
         end
@@ -72,17 +73,17 @@ function MonitorMisterXState()
     end)
 end
 
-function createSoppwatchThread()
+function CreateStopwatchThread()
     Citizen.CreateThread(function()
         -- startTime = GetGameTimer()
         Timer.Start();
-        showTimer = true
+        local showTimer = true
         while (showTimer) do
             -- seconds = math.ceil((GetGameTimer() - startTime) / 1000)
             -- seconds = Timer.GetElapsed() / 1000 -- GetElapsedCustomTime returns milliseconds, so we divide by 1000 to get seconds
-            seconds = Timer.GetElapsedTime() /
+            local seconds = Timer.GetElapsedTime() /
                 1000 -- GetElapsedTime returns milliseconds, so we divide by 1000 to get seconds
-            seconds_text = disp_time(seconds)
+            local seconds_text = FormatTimeForDisplay(seconds)
             drawTxt(seconds_text, 4, { 255, 255, 255 }, 0.7, 0.85, 0.01)
             Citizen.Wait(0)
         end
@@ -92,23 +93,23 @@ function createSoppwatchThread()
     end)
 end
 
-function disableCar()
+function DisableVehicleControls()
     -- print("Disabling Car Controls")
     DisableControlAction(2, 71, true)
     DisableControlAction(2, 72, true)
 end
 
-function enableCar()
+function EnableVehicleControls()
     -- print("Enabling Car Controls")
     EnableControlAction(2, 71, true)
     EnableControlAction(2, 72, true)
 end
 
-function modifyRunnerCar()
+function AdjustRunnerCarSettings()
     ModCar(VEHICLE_COLOR)
 end
 
-function modifyCopCar()
+function AdjustCopCarSettings()
     local color = math.random(0, 100)
     ModCar(color)
 end
@@ -128,7 +129,7 @@ function ModCar(vehicleColor)
     )
 
     for modType, modInfo in pairs(VEHICLE_MOD_TABLE) do
-        levels = GetNumVehicleMods(vehicle, modInfo[1])
-        SetVehicleMod(vehicle, modInfo[1], levels - 1, false)
+        local maxLevel = GetNumVehicleMods(vehicle, modInfo[1])
+        SetVehicleMod(vehicle, modInfo[1], maxLevel - 1, false)
     end
 end

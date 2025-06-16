@@ -1,31 +1,30 @@
 function showPingTime()
     local text = ("%ds"):format(math.ceil(remainingseconds))
-    drawTxt(text, fontNumber, locationColorText, scaleFactor, screenPosX,screenPosY)
+    drawTxt(text, fontNumber, locationColorText, scaleFactor, screenPosX, screenPosY)
 end
 
 function showVisibilityState()
     if playerIsVisible then
-        drawTxt("Visibile",fontNumber,{255,0,0},0.4,screenPosX+0.02,screenPosY)
+        drawTxt("Visibile", fontNumber, { 255, 0, 0 }, 0.4, screenPosX + 0.02, screenPosY)
     else
-        drawTxt("Hidden",fontNumber,{0,255,0},0.4,screenPosX+0.02,screenPosY)
+        drawTxt("Hidden", fontNumber, { 0, 255, 0 }, 0.4, screenPosX + 0.02, screenPosY)
     end
 end
 
-function DrawHudText(text,colour,coordsx,coordsy,scalex,scaley)
+function DrawHudText(text, colour, coordsx, coordsy, scalex, scaley)
     SetTextFont(4)
     SetTextProportional(7)
     SetTextScale(scalex, scaley)
-    local colourr,colourg,colourb,coloura = table.unpack(colour)
-    SetTextColour(colourr,colourg,colourb, coloura)
+    local colourr, colourg, colourb, coloura = table.unpack(colour)
+    SetTextColour(colourr, colourg, colourb, coloura)
     SetTextDropshadow(0, 0, 0, 0, coloura)
     SetTextEdge(1, 0, 0, 0, coloura)
     SetTextDropShadow()
     SetTextOutline()
     SetTextEntry("STRING")
     AddTextComponentString(text)
-    DrawText(coordsx,coordsy)
+    DrawText(coordsx, coordsy)
 end
-
 
 function helpMessage(text, duration)
     BeginTextCommandDisplayHelp("STRING")
@@ -36,9 +35,9 @@ end
 function drawTxt(content, font, colour, scale, x, y)
     SetTextFont(font)
     SetTextScale(scale, scale)
-    SetTextColour(colour[1],colour[2],colour[3], 255)
+    SetTextColour(colour[1], colour[2], colour[3], 255)
     SetTextEntry("STRING")
-    SetTextDropShadow(0, 0, 0, 0,255)
+    SetTextDropShadow(0, 0, 0, 0, 255)
     SetTextDropShadow()
     SetTextEdge(4, 0, 0, 0, 255)
     SetTextOutline()
@@ -48,27 +47,24 @@ end
 
 function printToPlayer(msg)
     TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
+        color = { 255, 0, 0 },
         multiline = true,
-        args = {"[Ping]", msg}
-        }
+        args = { "[Ping]", msg }
+    }
     )
 end
 
-function notifyPlayer(source,msg)
-    TriggerClientEvent('chatMessage', source, "[Ping]", {255, 0, 0}, msg)
+function notifyPlayer(source, msg)
+    TriggerClientEvent('chatMessage', source, "[Ping]", { 255, 0, 0 }, msg)
 end
 
-
-
 function showRoleTxt()
-    
     Citizen.CreateThread(function()
         while (showRole) do
             if role == "Thief" then
-                drawTxt(MisterXRoleName, fontNumber,MisterXColor,RoleNameScale,RoleNameLocationX,RoleNameLocationY)
+                drawTxt(MisterXRoleName, fontNumber, MisterXColor, RoleNameScale, RoleNameLocationX, RoleNameLocationY)
             else
-                drawTxt(CopRoleName, fontNumber,CopColor,RoleNameScale,RoleNameLocationX,RoleNameLocationY)
+                drawTxt(CopRoleName, fontNumber, CopColor, RoleNameScale, RoleNameLocationX, RoleNameLocationY)
             end
             Citizen.Wait(0)
         end
@@ -80,25 +76,24 @@ function showNumberofHides()
     Citizen.CreateThread(function()
         while (showHides) do
             local message = ("Hides Left: %s"):format(number_of_hides)
-            drawTxt(message, fontNumber,HideCounterColor,HideCounterScale,HideCounterLocationX,HideCounterLocationY)
+            drawTxt(message, fontNumber, HideCounterColor, HideCounterScale, HideCounterLocationX, HideCounterLocationY)
             Citizen.Wait(0)
         end
     end)
 end
 
+function Draw3DText(x, y, z, textInput, colour, fontId, scaleX, scaleY)
+    local px, py, pz = table.unpack(GetGameplayCamCoords())
+    local dist = GetDistanceBetweenCoords(px, py, pz, x, y, z, 1)
+    local scale = (1 / dist) * 20
+    local fov = (1 / GetGameplayCamFov()) * 100
+    local scale = scale * fov
 
-function Draw3DText(x,y,z,textInput,colour,fontId,scaleX,scaleY)
-    local px,py,pz=table.unpack(GetGameplayCamCoords())
-    local dist = GetDistanceBetweenCoords(px,py,pz, x,y,z, 1)
-    local scale = (1/dist)*20
-    local fov = (1/GetGameplayCamFov())*100
-    local scale = scale*fov
-
-    SetTextScale(scaleX*scale, scaleY*scale)
+    SetTextScale(scaleX * scale, scaleY * scale)
     SetTextFont(fontId)
     SetTextProportional(1)
-    local colourr,colourg,colourb,coloura = table.unpack(colour)
-    SetTextColour(colourr,colourg,colourb, coloura)
+    local colourr, colourg, colourb, coloura = table.unpack(colour)
+    SetTextColour(colourr, colourg, colourb, coloura)
     SetTextDropshadow(2, 1, 1, 1, 255)
     SetTextEdge(3, 0, 0, 0, 150)
     SetTextDropShadow()
@@ -106,7 +101,7 @@ function Draw3DText(x,y,z,textInput,colour,fontId,scaleX,scaleY)
     SetTextEntry("STRING")
     SetTextCentre(1)
     AddTextComponentString(textInput)
-    SetDrawOrigin(x,y,z+2, 0)
+    SetDrawOrigin(x, y, z + 2, 0)
     DrawText(0.0, 0.0)
     ClearDrawOrigin()
 end

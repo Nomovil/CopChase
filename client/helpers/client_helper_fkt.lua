@@ -1,21 +1,21 @@
 function disp_time(time)
-    local days = math.floor(time/86400)
+    local days = math.floor(time / 86400)
     local remaining = time % 86400
-    local hours = math.floor(remaining/3600)
+    local hours = math.floor(remaining / 3600)
     remaining = remaining % 3600
-    local minutes = math.floor(remaining/60)
+    local minutes = math.floor(remaining / 60)
     remaining = remaining % 60
     local seconds = remaining
     if (hours < 10) then
-      hours = "0" .. tostring(hours)
+        hours = "0" .. tostring(hours)
     end
     if (minutes < 10) then
-      minutes = "0" .. tostring(minutes)
+        minutes = "0" .. tostring(minutes)
     end
     if (seconds < 10) then
-      seconds = "0" .. tostring(seconds)
+        seconds = "0" .. tostring(seconds)
     end
-    answer = tostring(hours)..'h:'..minutes..'m:'..seconds..'s'
+    local answer = tostring(hours) .. 'h:' .. minutes .. 'm:' .. seconds .. 's'
     return answer
 end
 
@@ -29,24 +29,23 @@ end
 
 function checkPlayerIsInVehicle()
     local ped = GetPlayerPed(-1)
-    return GetVehiclePedIsIn(ped,false) > 0
+    return GetVehiclePedIsIn(ped, false) > 0
 end
 
-
 function startCountdown(time_to_count_down)
-    time = GetGameTimer() + time_to_count_down*1000
+    time = GetGameTimer() + time_to_count_down * 1000
 end
 
 function getremainingTime()
-    return math.floor((time-GetGameTimer())/1000)
+    return math.floor((time - GetGameTimer()) / 1000)
 end
 
 function setCountdownTime(time_to_count_down)
-    return GetGameTimer() + time_to_count_down*1000
+    return GetGameTimer() + time_to_count_down * 1000
 end
 
 function getRemainingCountdownTime(finishtime)
-   return math.floor((finishtime - GetGameTimer())/1000) 
+    return math.floor((finishtime - GetGameTimer()) / 1000)
 end
 
 function MonitorMisterXState()
@@ -58,15 +57,15 @@ function MonitorMisterXState()
         showTimer = true
         -- while (showTimer and checkPlayerIsInVehicle()) do
         while (showTimer and checkIfPlayerGotTasered()) do
-            seconds = math.ceil((GetGameTimer()-startTime)/1000)
+            seconds = math.ceil((GetGameTimer() - startTime) / 1000)
             seconds_text = disp_time(seconds)
-            drawTxt(seconds_text, 4,{255,255,255},0.7,0.85,0.01)
+            -- drawTxt(seconds_text, 4, { 255, 255, 255 }, 0.7, 0.85, 0.01)
             Citizen.Wait(0)
-end
+        end
         local name = GetPlayerName(PlayerId())
-        local message = ("%s escaped for: %s"):format(name,seconds_text)
+        local message = ("%s escaped for: %s"):format(name, seconds_text)
         -- printToPlayer(mesage)
-        TriggerServerEvent("PING:deliverMessage",message)
+        TriggerServerEvent("PING:deliverMessage", message)
 
 
         TriggerServerEvent("PING:ThiefLost")
@@ -75,16 +74,61 @@ end
 
 function createSoppwatchThread()
     Citizen.CreateThread(function()
-        startTime = GetGameTimer()
+        -- startTime = GetGameTimer()
+        Timer.Start();
         showTimer = true
         while (showTimer) do
-            seconds = math.ceil((GetGameTimer()-startTime)/1000)
+            -- seconds = math.ceil((GetGameTimer() - startTime) / 1000)
+            -- seconds = Timer.GetElapsed() / 1000 -- GetElapsedCustomTime returns milliseconds, so we divide by 1000 to get seconds
+            seconds = Timer.GetElapsedTime() /
+                1000 -- GetElapsedTime returns milliseconds, so we divide by 1000 to get seconds
             seconds_text = disp_time(seconds)
-            drawTxt(seconds_text, 4,{255,255,255},0.7,0.85,0.01)
+            drawTxt(seconds_text, 4, { 255, 255, 255 }, 0.7, 0.85, 0.01)
             Citizen.Wait(0)
         end
         -- local message = ("MisterX escaped for: %s"):format(seconds_text)
         -- -- printToPlayer(mesage)
         -- TriggerServerEvent("PING:deliverMessage",message)
     end)
+end
+
+function disableCar()
+    -- print("Disabling Car Controls")
+    DisableControlAction(2, 71, true)
+    DisableControlAction(2, 72, true)
+end
+
+function enableCar()
+    -- print("Enabling Car Controls")
+    EnableControlAction(2, 71, true)
+    EnableControlAction(2, 72, true)
+end
+
+function modifyRunnerCar()
+    ModCar(VEHICLE_COLOR)
+end
+
+function modifyCopCar()
+    local color = math.random(0, 100)
+    ModCar(color)
+end
+
+function ModCar(vehicleColor)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+
+    SetVehicleColours(
+        vehicle --[[ Vehicle ]],
+        vehicleColor --[[ integer ]],
+        vehicleColor --[[ integer ]]
+    )
+
+    SetVehicleModKit(
+        vehicle --[[ Vehicle ]],
+        0 --[[ integer ]]
+    )
+
+    for modType, modInfo in pairs(VEHICLE_MOD_TABLE) do
+        levels = GetNumVehicleMods(vehicle, modInfo[1])
+        SetVehicleMod(vehicle, modInfo[1], levels - 1, false)
+    end
 end

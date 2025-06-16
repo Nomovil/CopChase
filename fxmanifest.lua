@@ -1,14 +1,17 @@
 -- Resource Metadata
 fx_version 'bodacious'
+-- lua54 'yes'
 games { 'gta5' }
 
 author 'nomovil'
-description 'CopChase'
+description 'CopChase2'
 version '0.0.5'
 
 client_scripts {
+    "client/helpers/custom_timer.lua",
     "config/config.lua",
     "config/gui_config.lua",
+    "config/command_config.lua",
     "config/itembox_config.lua",
     "client/commands/client_commands.lua",
     "client/events/client_events.lua",
@@ -16,7 +19,7 @@ client_scripts {
     "client/gui/gui_client.lua",
     "client/itembox/client_itembox.lua",
     "client/itembox/client_itembox_actions.lua",
-    "develpoment_client.lua"
+    "development_client.lua",
 }
 
 server_scripts {
@@ -32,6 +35,7 @@ files {
     'nui/nui.html',
     'nui/style.css',
     'nui/script.js',
-    'nui/images/*'
+    'nui/images/*',
 }
-export "fixcar"
+-- export "fixcar"
+

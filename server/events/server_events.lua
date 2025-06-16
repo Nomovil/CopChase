@@ -23,6 +23,18 @@ AddEventHandler("PING:startChase",function()
     TriggerClientEvent("PING:startChase_cl",-1)
 end)
 
+RegisterNetEvent("PING:pauseGame")
+AddEventHandler("PING:pauseGame",function()
+    print("Pausing Game")
+    TriggerClientEvent("PING:pauseGame_cl",-1)
+end)
+
+RegisterNetEvent("PING:resumeGame")
+AddEventHandler("PING:resumeGame",function()
+    print("Resuming Game")
+    TriggerClientEvent("PING:resumeGame_cl",-1)
+end)
+
 RegisterNetEvent("PING:registerCop_server")
 AddEventHandler("PING:registerCop_server",function()
     local added_cop = false

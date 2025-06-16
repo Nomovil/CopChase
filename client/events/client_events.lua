@@ -103,6 +103,7 @@ AddEventHandler("PING:startChase_cl",function(source)
         number_of_hides = MAX_NUMBER_HIDES
         MonitorMisterXState()
         showNumberofHides()
+        modifyRunnerCar()
         finishtime = setCountdownTime(2)
         while getRemainingCountdownTime(finishtime) > 0 do
             Citizen.Wait(1) 
@@ -111,18 +112,32 @@ AddEventHandler("PING:startChase_cl",function(source)
         return
     end
     startCountdown(COUNTDOWNTIME)
+    modifyCopCar()
     while getremainingTime() > 0 do
         Citizen.Wait(1)
         DrawHudText(getremainingTime(), StartCounterColor,StartCounterLocationX,StartCounterLocationY,4.0,4.0)
             
         -- Disable acceleration/reverse until race starts
-        DisableControlAction(2, 71, true)
-        DisableControlAction(2, 72, true)
+        disableCar()
     end
-    EnableControlAction(2, 71, true)
-    EnableControlAction(2, 72, true)
+    enableCar()
 end)
 
+RegisterNetEvent("PING:pauseGame_cl")
+AddEventHandler("PING:pauseGame_cl",function()
+    Timer.Pause()
+    while Timer.timerPaused do
+        Citizen.Wait(1) 
+        DrawHudText("Pause", StartMessageColor,StartMessageLocationX,StartMessageLocationY,4.0,4.0)
+        disableCar()
+    end
+end)
+
+RegisterNetEvent("PING:resumeGame_cl")
+AddEventHandler("PING:resumeGame_cl",function()
+    Timer.Resume()
+    enableCar()
+end)
 
 RegisterNetEvent("PING:slowDown",function()
     Slowdown()

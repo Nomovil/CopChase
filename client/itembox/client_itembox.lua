@@ -2,7 +2,6 @@ itemboxes = {}
 local lastActionTime = 0
 
 function selectAction()
-
     local Actions = {
         Slowdown,
         add_speedboster,
@@ -15,17 +14,16 @@ function selectAction()
     }
     local function_to_call = choose_element(Actions, probabilities_Actions)
     function_to_call()
-
-
 end
-
 
 function choose_element(elements, probabilities)
     -- Überprüfen, ob die Länge der Liste und die der Wahrscheinlichkeiten übereinstimmen
     if #elements ~= #probabilities then
-        error(string.format("Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen. Elements: %d, Probabilities: %d", #elements, #probabilities))
+        error(string.format(
+        "Die Längen der Liste und der Wahrscheinlichkeiten müssen übereinstimmen. Elements: %d, Probabilities: %d",
+            #elements, #probabilities))
     end
-    
+
     -- Kumulative Summe der Wahrscheinlichkeiten berechnen
     local cumulative_probabilities = {}
     local cumulative_sum = 0
@@ -35,14 +33,14 @@ function choose_element(elements, probabilities)
     end
     if cumulative_sum < 0.99999 then
         error(string.format("Die Summe der Wahrscheinlichkeiten muss 1 ergeben. Summe: %f", cumulative_sum))
-        return lambda: print("Platzhalter")
+        return lambda:print("Platzhalter")
     end
 
     -- Zufallszahl zwischen 0 und 1 generieren
     local random_value = math.random()
     if random_value > cumulative_sum then
         error(string.format("Random Value: %f, Cumulative Sum: %f", random_value, cumulative_sum))
-    end 
+    end
 
     -- Element auswählen basierend auf der Zufallszahl und den kumulativen Wahrscheinlichkeiten
     for i, cumulative_prob in ipairs(cumulative_probabilities) do
@@ -56,7 +54,6 @@ function choose_element(elements, probabilities)
     end
     error(string.format("Kein Element ausgewählt. Random Value: %f", random_value))
 end
-
 
 -- Main Thread
 -- Checks Button Presses and Draws Itemboxes
@@ -73,12 +70,15 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
+    if not SPAWN_LOOT_BOX then
+        return
+    end
     while RANDOM_ITEMBOX_SPAWN_ON do
         local pos = getPosinHeading(PlayerPedId())
         -- selectAction()
         boxtype = getBoxType()
-        TriggerServerEvent("PING:createItemBox",pos, boxtype)
-        Citizen.Wait(RANDOM_ITEMBOX_SPAWN_TIMER*1000)
+        TriggerServerEvent("PING:createItemBox", pos, boxtype)
+        Citizen.Wait(RANDOM_ITEMBOX_SPAWN_TIMER * 1000)
     end
 end)
 
@@ -94,7 +94,7 @@ Citizen.CreateThread(function()
                 error("Index out of bounds")
                 goto continue
             end
-            MarkerisinReach(box,index)
+            MarkerisinReach(box, index)
         end
         ::continue::
     end
@@ -104,8 +104,8 @@ end)
 -- Itmebox Handling
 
 function getBoxType()
-    local boxtype = choose_element({NORMAL_BOX_MARKER
-    ,REPAIR_BOX_MARKER},item_box_probabilities)
+    local boxtype = choose_element({ NORMAL_BOX_MARKER
+    , REPAIR_BOX_MARKER }, item_box_probabilities)
     return boxtype
 end
 
@@ -114,7 +114,8 @@ function createNewItemBox(pos, boxtype)
 end
 
 function action_button_pressed()
-    local currentTime = GetGameTimer() / 1000 -- GetGameTimer gibt die Zeit in Millisekunden zurück, daher teilen wir durch 1000, um Sekunden zu erhalten
+    local currentTime = GetGameTimer() /
+    1000                                      -- GetGameTimer gibt die Zeit in Millisekunden zurück, daher teilen wir durch 1000, um Sekunden zu erhalten
     if IsControlJustReleased(0, ACTION_BTN_NUMBER) and (currentTime - lastActionTime) >= debounceInterval then
         lastActionTime = currentTime
         local pos = getPosinHeading(PlayerPedId())
@@ -134,9 +135,10 @@ function drawExistingItemBox()
             green = 255
             blue = 255
         end
-        DrawMarker(box.type, box.x, box.y, box.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255, true, true, 2, nil, nil, false)
+        DrawMarker(box.type, box.x, box.y, box.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, red, green, blue, 255,
+            true, true, 2, nil, nil, false)
         if TESTING then
-            Draw3DText(box.x, box.y, box.z - 0.600, index, {red, green, blue, 255}, 4, 0.3, 0.3)
+            Draw3DText(box.x, box.y, box.z - 0.600, index, { red, green, blue, 255 }, 4, 0.3, 0.3)
         end
     end
 end
@@ -150,7 +152,7 @@ function MarkerisinReach(box, index)
         else
             -- printToPlayer("Performing Action for Itembox: " .. index)
 
-            -- selectAction()
+            selectAction()
         end
     elseif distance >= ITEMBOX_MAX_DISTANCE then
         print("distance: " .. distance .. " max distance: " .. ITEMBOX_MAX_DISTANCE)
@@ -160,17 +162,16 @@ function MarkerisinReach(box, index)
 end
 
 function getPosinHeading(playerid)
-    fwd,_,_,pos = GetEntityMatrix(playerid)
-    local multiplyer = math.random(10,100)
-    local newx = pos.x + fwd.x*multiplyer
-    local newy = pos.y + fwd.y*multiplyer
-    local newPosHeading = vec(newx,newy,pos.z)
-    retval, newz = GetSafeCoordForPed(newPosHeading.x,newPosHeading.y,newPosHeading.z,false,newz,0)
+    fwd, _, _, pos = GetEntityMatrix(playerid)
+    local multiplyer = math.random(10, 100)
+    local newx = pos.x + fwd.x * multiplyer
+    local newy = pos.y + fwd.y * multiplyer
+    local newPosHeading = vec(newx, newy, pos.z)
+    retval, newz = GetSafeCoordForPed(newPosHeading.x, newPosHeading.y, newPosHeading.z, false, newz, 0)
     return newz
 end
 
-
-RegisterNetEvent("PING:createItemBox_cl",function(pos,boxtype)
+RegisterNetEvent("PING:createItemBox_cl", function(pos, boxtype)
     createNewItemBox(pos, boxtype)
 end)
 
@@ -196,17 +197,15 @@ function show_number_of_speedboosts()
     while true do
         if number_of_speedboosts >= 1 then
             local text = string.format("Speedboosts: %d", number_of_speedboosts)
-            drawTxt(text,4,{0,255,0},0.4,screenPosX+0.02,screenPosY)
+            drawTxt(text, 4, { 0, 255, 0 }, 0.4, screenPosX + 0.02, screenPosY)
         end
         Citizen.Wait(0)
     end
 end
 
-
-
 function activate_speedboost()
     while true do
-        DisableControlAction(0,80,true)
+        DisableControlAction(0, 80, true)
         if IsControlJustReleased(2, 45) and number_of_speedboosts >= 1 then
             Speedup()
             number_of_speedboosts = number_of_speedboosts - 1
@@ -214,7 +213,6 @@ function activate_speedboost()
         Citizen.Wait(0)
     end
 end
-
 
 Citizen.CreateThread(function()
     show_number_of_speedboosts()
